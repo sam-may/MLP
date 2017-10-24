@@ -1,0 +1,12 @@
+[submodule "babymaker/scripts"]
+	path = babymaker/scripts
+	url = git@github.com:sgnoohc/scripts.git
+[submodule "babymaker/COREHelper"]
+	path = babymaker/COREHelper
+	url = git@github.com:sgnoohc/COREHelper.git
+[submodule "babymaker/rooutil"]
+	path = babymaker/rooutil
+	url = git@github.com:sgnoohc/rooutil.git
+[submodule "babymaker/CORE"]
+	path = babymaker/CORE
+	url = git@github.com:cmstas/CORE.git

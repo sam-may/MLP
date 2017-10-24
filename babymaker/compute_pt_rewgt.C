@@ -34,6 +34,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         else if (i <= 56) ptbinsfine[i] = 50 + 5 * (i - 50);
         else if (i <= 62) ptbinsfine[i] = 80 + 20 * (i - 56);
         else              ptbinsfine[i] =200 + 50 * (i - 62);
+        std::cout << ptbinsfine[i] << std::endl;
     }
 
     int netabins = 3;

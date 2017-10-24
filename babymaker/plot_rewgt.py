@@ -2,6 +2,7 @@
 
 import ROOT as r
 import plottery_wrapper as pw
+from plottery import plottery as ply
 
 f = r.TFile("rewgt.root")
 
@@ -120,3 +121,5 @@ ratio.Divide(h_mu_sf_sig_fine, h_mu_sf_bkg_fine)
 for i in xrange(1, ratio.GetNbinsX()+1):
     for j in xrange(1, ratio.GetNbinsY()+1):
         print i, j, ratio.GetBinContent(i, j)
+
+ply.plot_hist_2d(ratio, {"output_name":"fine_sf.png"})

@@ -1,7 +1,6 @@
 
 float rewgtfine(float pt, float eta)
 {
-
     if      (pt < 1   && fabs(eta) < 1.0) return 1.0;
     else if (pt < 1   && fabs(eta) < 2.1) return 1.0;
     else if (pt < 1   && fabs(eta) < 2.4) return 1.0;
@@ -194,15 +193,15 @@ float rewgtfine(float pt, float eta)
     else if (pt < 300 && fabs(eta) < 1.0) return 12.5247674315;
     else if (pt < 300 && fabs(eta) < 2.1) return 10.5581764055;
     else if (pt < 300 && fabs(eta) < 2.4) return 6.04817743172;
-    else if (pt < 400 && fabs(eta) < 1.0) return 8.13890543281;
-    else if (pt < 400 && fabs(eta) < 2.1) return 6.98900503221;
+    else if (pt < 350 && fabs(eta) < 1.0) return 8.13890543281;
+    else if (pt < 350 && fabs(eta) < 2.1) return 6.98900503221;
+    else if (pt < 350 && fabs(eta) < 2.4) return 1.0;
+    else if (pt < 400 && fabs(eta) < 1.0) return 4.79374063107;
+    else if (pt < 400 && fabs(eta) < 2.1) return 1.0;
     else if (pt < 400 && fabs(eta) < 2.4) return 1.0;
-    else if (pt < 500 && fabs(eta) < 1.0) return 4.79374063107;
-    else if (pt < 500 && fabs(eta) < 2.1) return 1.0;
-    else if (pt < 500 && fabs(eta) < 2.4) return 1.0;
-    else if (pt < 1000&& fabs(eta) < 1.0) return 6.78739911782;
-    else if (pt < 1000&& fabs(eta) < 2.1) return 1.88165520098;
-    else if (pt < 1000&& fabs(eta) < 2.4) return 1.0;
+    else if (pt < 450 && fabs(eta) < 1.0) return 6.78739911782;
+    else if (pt < 450 && fabs(eta) < 2.1) return 1.88165520098;
+    else if (pt < 450 && fabs(eta) < 2.4) return 1.0;
     else return 1.0;
 
 }

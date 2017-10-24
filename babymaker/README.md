@@ -37,3 +37,16 @@ To run over everything change ```1000``` to ```-1```.
 To generate the json file from a ```output.root```, do
 
     $ run.sh -c convert_to_json.C output.json t -1 dummy output.root
+
+# Computing reweighting factor
+
+The script to compute the reweighting factor is here.
+
+    $ run.sh -c compute_pt_rewgt.C rewgt.root t -1 dummy ~/public_html/tasutil/IsoML_output.root
+
+The output ```rewgt.root``` contains histograms.
+The plotter will then print out reweighting factors.
+
+    $ python plot_rewgt.py
+
+The rewgt factors are copied and saved to ```rewgt.C```.

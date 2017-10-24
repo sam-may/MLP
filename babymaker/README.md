@@ -7,9 +7,18 @@ The setup will use ROOT version defined in the ```root.sh```.
 
 # First time installing
 
+I assume you are sitting in ```babymaker/``` directory.
 Few additional packages are needed.
+If you have not cloned recursively when cloning this repo, issue the following command to checkout all the submodules.
 
-    $ source bootstrap.sh
+    $ cd ../ # to go to the MLP/ parent directory
+    $ git submodule update --init --recursive
+    $ cd babymaker/
+
+Afterwards,
+
+    $ source scripts/setup.sh
+    $ compile.sh
 
 # Second time
 

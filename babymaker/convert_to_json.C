@@ -13,85 +13,90 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
 
     int ievent = 0;
     looper.setSilent();
+
+    // output file
+    ofstream jsonfile;
+    jsonfile.open(output_name.Data());
+
     // Main event loop
     while (looper.nextEvent())
     {
-        std::cout << "{";
+        jsonfile << "{";
 
-        std::cout << "'Row' : ";
-        std::cout << ievent;
-        std::cout << ",";
+        jsonfile << "'Row' : ";
+        jsonfile << ievent;
+        jsonfile << ",";
 
-        std::cout << "'lepton_flavor' : ";
-        std::cout << isoml.lepton_flavor();
-        std::cout << ",";
+        jsonfile << "'lepton_flavor' : ";
+        jsonfile << isoml.lepton_flavor();
+        jsonfile << ",";
 
-        std::cout << "'lepton_isFromW' : ";
-        std::cout << isoml.lepton_isFromW();
-        std::cout << ",";
+        jsonfile << "'lepton_isFromW' : ";
+        jsonfile << isoml.lepton_isFromW();
+        jsonfile << ",";
 
-        std::cout << "'lepton_relIso03EA' : ";
-        std::cout << isoml.lepton_relIso03EA();
-        std::cout << ",";
+        jsonfile << "'lepton_relIso03EA' : ";
+        jsonfile << isoml.lepton_relIso03EA();
+        jsonfile << ",";
 
-        std::cout << "'lepVec' : ";
-        std::cout << "[";
-        std::cout << isoml.lepton_eta();
-        std::cout << ",";
-        std::cout << isoml.lepton_phi();
-        std::cout << ",";
-        std::cout << isoml.lepton_pt();
-        std::cout << ",";
-        std::cout << isoml.lepton_relIso03EA();
-        std::cout << ",";
-        std::cout << isoml.lepton_chiso();
-        std::cout << ",";
-        std::cout << isoml.lepton_emiso();
-        std::cout << ",";
-        std::cout << isoml.lepton_nhiso();
-        std::cout << ",";
-        std::cout << isoml.lepton_ncorriso();
-        std::cout << ",";
-        std::cout << isoml.lepton_dxy();
-        std::cout << ",";
-        std::cout << isoml.lepton_dz();
-        std::cout << ",";
-        std::cout << isoml.lepton_ip3d();
-        std::cout << "]";
-        std::cout << ",";
+        jsonfile << "'lepVec' : ";
+        jsonfile << "[";
+        jsonfile << isoml.lepton_eta();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_phi();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_pt();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_relIso03EA();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_chiso();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_emiso();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_nhiso();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_ncorriso();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_dxy();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_dz();
+        jsonfile << ",";
+        jsonfile << isoml.lepton_ip3d();
+        jsonfile << "]";
+        jsonfile << ",";
 
-        std::cout << "'X' : ";
-        std::cout << "[";
+        jsonfile << "'X' : ";
+        jsonfile << "[";
         for (unsigned int ipf = 0; ipf < isoml.pf_pt().size(); ++ipf)
         {
-            std::cout << "[";
-            std::cout << isoml.pf_eta()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_phi()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_pt()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_charge()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_el()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_mu()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_chHad()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_nEM()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_nHad()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_HFHad()[ipf];
-            std::cout << ",";
-            std::cout << isoml.pf_HFEM()[ipf];
-            std::cout << "]";
-            std::cout << ",";
+            jsonfile << "[";
+            jsonfile << isoml.pf_eta()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_phi()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_pt()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_charge()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_el()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_mu()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_chHad()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_nEM()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_nHad()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_HFHad()[ipf];
+            jsonfile << ",";
+            jsonfile << isoml.pf_HFEM()[ipf];
+            jsonfile << "]";
+            jsonfile << ",";
         }
-        std::cout << "]";
-        std::cout << "}";
-        std::cout << std::endl;
+        jsonfile << "]";
+        jsonfile << "}";
+        jsonfile << std::endl;
 
         ievent++;
     }

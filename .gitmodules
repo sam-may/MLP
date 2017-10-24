@@ -10,3 +10,6 @@
 [submodule "babymaker/CORE"]
 	path = babymaker/CORE
 	url = git@github.com:cmstas/CORE.git
+[submodule "babymaker/plottery"]
+	path = babymaker/plottery
+	url = git@github.com:aminnj/plottery.git

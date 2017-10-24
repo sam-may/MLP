@@ -8,11 +8,10 @@
 // RooUtil tool
 #include "IsoMLTree.cc"
 #include "rooutil/looper.h"
+#include "rooutil/autohist.h"
 #include "rooutil/ttreex.h"
 
 #include "Math/VectorUtil.h"
-
-#include "rewgt.C"
 
 using namespace std;
 using namespace RooUtil;

@@ -12,7 +12,12 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     isoml.Init(chain->GetTree());
 
     int ievent = 0;
-    looper.setSilent();
+
+    // lepton counters
+    unsigned int n_prompt_mu = 0;
+    unsigned int n_prompt_el = 0;
+    unsigned int n_fake_mu = 0;
+    unsigned int n_fake_el = 0;
 
     // output file
     ofstream jsonfile;
@@ -21,6 +26,11 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     // Main event loop
     while (looper.nextEvent())
     {
+        if (isoml.lepton_flavor() == 0 && isoml.lepton_isFromW() == 0) n_fake_el++;
+        if (isoml.lepton_flavor() == 1 && isoml.lepton_isFromW() == 0) n_fake_mu++;
+        if (isoml.lepton_flavor() == 0 && isoml.lepton_isFromW() == 1) n_prompt_el++;
+        if (isoml.lepton_flavor() == 1 && isoml.lepton_isFromW() == 1) n_prompt_mu++;
+
         jsonfile << "{";
 
         jsonfile << "'Row' : ";
@@ -37,6 +47,14 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
 
         jsonfile << "'lepton_relIso03EA' : ";
         jsonfile << isoml.lepton_relIso03EA();
+        jsonfile << ",";
+
+        jsonfile << "'nvtx' : ";
+        jsonfile << isoml.nvtx();
+        jsonfile << ",";
+
+        jsonfile << "'rewgt' : ";
+        jsonfile << rewgtfine(isoml.lepton_pt(), isoml.lepton_eta());
         jsonfile << ",";
 
         jsonfile << "'lepVec' : ";
@@ -100,6 +118,11 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
 
         ievent++;
     }
+
+    std::cout << n_fake_el++ << std::endl;
+    std::cout << n_fake_mu++ << std::endl;
+    std::cout << n_prompt_el++ << std::endl;
+    std::cout << n_prompt_mu++ << std::endl;
 }
 
 // eof

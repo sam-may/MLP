@@ -284,7 +284,7 @@ for file in txtFiles:
     idx1 += 1
 
 f = open('output_MLP.txt', 'w')
-for r, y in zip(r, y_pred):
+for r, y in zip(row, y_pred):
     f.write("{} {}\n".format(r, y))
 f.close()
 

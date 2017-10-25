@@ -29,6 +29,8 @@ nvtx = []
 pf_energyIn03 = []
 pf_energyOut03 = []
 
+row = []
+
 
 ### Parse json-formatted data
 def parseData(fname):
@@ -44,7 +46,8 @@ index = 0
 #for d in parseData("/home/jmcauley/datasets/leptons/parsed_50000entries.json.gz"):
 #for d in parseData("parsed_IsoML.json.gz"):
 #for d in parseData("parsed_50000entries.json.gz"):
-for d in parseData("parsed_100k.json.gz"):
+#for d in parseData("parsed_100k.json.gz"):
+for d in parseData("babymaker/jsons/output_100k_v0.0.1.json.gz"):
   if d['lepton_flavor'] == 0: # To skip either muons or electrons
     continue
   # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
@@ -75,6 +78,7 @@ for d in parseData("parsed_100k.json.gz"):
   lepton_pt.append(d['lepVec'][2])
   lepton_phi.append(d['lepVec'][1])
   lepton_eta.append(d['lepVec'][0])
+  row.append(d['Row'])
   if (len(y) % 1000 == 0 and len(y)):
     print(len(y))
   index += 1
@@ -234,6 +238,7 @@ pt = list(numpy.array(lepton_pt))[n_train:]
 eta = list(numpy.array(lepton_eta))[n_train:]
 phi = list(numpy.array(lepton_phi))[n_train:]
 numVtx = list(numpy.array(nvtx))[n_train:]
+row = list(numpy.array(row))[n_train:]
 
 pf_energyIn03 = list(numpy.array(pf_energyIn03))[n_train:]
 pf_energyOut03 = list(numpy.array(pf_energyOut03))[n_train:]
@@ -277,6 +282,12 @@ for file in txtFiles:
         idx2 += 1
     file.close()
     idx1 += 1
+
+f = open('output_MLP.txt', 'w')
+for r, y in zip(r, y_pred):
+    f.write("{} {}\n".format(r, y))
+f.close()
+
 
 #for item in list(-numpy.array(re))[n_train:]:
 #    discFileRI.write("%.3f" % item)

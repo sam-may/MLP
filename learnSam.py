@@ -86,7 +86,6 @@ lengths = [len(x) for x in XX]
 longest = max(lengths)
 
 for x,xx in zip(X,XX):
-  xx = numpy.zeros_like(xx)
   mat = numpy.concatenate([numpy.tile(x, (len(xx),1)), xx],axis=1)
   add = longest - len(xx)
   pad = numpy.pad(mat, [[0,add],[0,0]], 'constant')
@@ -95,9 +94,6 @@ for x,xx in zip(X,XX):
   XXX.append(pad)
 
 XXX = numpy.array(XXX)
-
-# FIXME
-#XXX = numpy.zeros_like(XXX)
 
 y = numpy.array(y, dtype = numpy.float32)
 

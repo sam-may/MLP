@@ -76,6 +76,7 @@ def prepEval(jsonFile):
   XXX = [] # Per-row features concatenated to per-instance features
   y = [] # label
   re = [] # relIso field used for baseline predictor
+  row = [] # event identifier
 
   pt = []
   eta = []
@@ -99,6 +100,7 @@ def prepEval(jsonFile):
     X.append(numpy.array(x, dtype = numpy.float32))
     re.append(d['lepton_relIso03EA'])
     y.append(d['lepton_isFromW'])
+    row.append(d['Row'])
 
     lepVec = d['lepVec']
     pfCands = d['X']
@@ -117,7 +119,6 @@ def prepEval(jsonFile):
 
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))
-      break
 
   # This code pads each row with zeros to have the same number of instances. This allows for efficient representation of the whole dataset as a 3-d tensor. It is fairly wasteful in terms of memory but is necessary for efficient computation
   XXX = []
@@ -138,5 +139,5 @@ def prepEval(jsonFile):
 
   vars = numpy.array([pt, eta, phi, pf_energyIn03, pf_energyOut03, nCands, nVtx, ip3d])
 
-  return XXX, y, re, vars
+  return XXX, y, row, re, vars
 

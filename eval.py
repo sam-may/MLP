@@ -14,7 +14,7 @@ from math import log
 
 import prep
 
-XXX, y, re, vars = prep.prepEval()
+XXX, y, re, vars = prep.prepEval("../convertJson/parsed_100k_nvtx.json.gz")
 
 # Controls number of hidden dimensions
 n_input = len(XXX[0][0])
@@ -82,6 +82,9 @@ with tf.Session() as sess:
 sess.close()
 
 varsToWrite = numpy.array([y_pred, re])
+for var in vars:
+  varsToWrite.append(var)
+
 
 # Keep only non-training portion
 for var in varsToWrite:

@@ -13,7 +13,7 @@ from math import log
 
 import prep
 
-XXX, y = prep.prepLearn()
+XXX, y = prep.prepLearn("../convertJson/parsed_100k_nvtx.json.gz")
 
 # Controls number of hidden dimensions
 n_input = len(XXX[0][0])

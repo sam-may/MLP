@@ -1,19 +1,21 @@
 import gzip
 import numpy
 
+import math
+
 ### Parse json-formatted data
 def parseData(fname):
   for l in gzip.open(fname):
     yield eval(l)
 
-def prepLearn():
+def prepLearn(jsonFile):
   X = [] # Per-row features
   XX = [] # Per-instance features
   XXX = [] # Per-row features concatenated to per-instance features
   y = [] # label
   re = [] # relIso field used for baseline predictor
 
-  for d in parseData("../parsed_100k.json.gz"):
+  for d in parseData(jsonFile):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
@@ -62,13 +64,13 @@ def calcPfEnergy(pfCands, lepVec):
       enOut03 += pfCands[i][2]
     else:
       if pfCands[i][5] == 1 and dR < 0.05: # check if pf cand is lepton itself
-        contine # don't include
+        continue # don't include
       else:
         enIn03 += pfCands[i][2]
 
   return enIn03, enOut03, nCands
 
-def prepEval():
+def prepEval(jsonFile):
   X = [] # Per-row features
   XX = [] # Per-instance features
   XXX = [] # Per-row features concatenated to per-instance features
@@ -86,7 +88,7 @@ def prepEval():
 
   vars = numpy.array([pt, eta, phi, pf_energyIn03, pf_energyOut03, nCands, nVtx, ip3d])
 
-  for d in parseData("../parsed_100k.json.gz"):
+  for d in parseData(jsonFile):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
@@ -101,17 +103,17 @@ def prepEval():
     lepVec = d['lepVec']
     pfCands = d['X']
 
-    vars[0].append(lepVec[2]) # pt
-    vars[1].append(lepVec[0]) # eta  
-    vars[2].append(lepVec[1]) # phi
+    numpy.append(vars[0],lepVec[2]) # pt
+    numpy.append(vars[1],lepVec[0]) # eta  
+    numpy.append(vars[2],lepVec[1]) # phi
 
     enIn03, enOut03, nCands = calcPfEnergy(pfCands, lepVec)
 
-    vars[3].append(enIn03)
-    vars[4].append(enOut03)
-    vars[5].append(nCands)
-    vars[6].append(d['nvtx'])
-    vars[7].append(lepVec[10]) # ip3d
+    numpy.append(vars[3],enIn03)
+    numpy.append(vars[4],enOut03)
+    numpy.append(vars[5],nCands)
+    numpy.append(vars[6],d['nvtx'])
+    numpy.append(vars[7],lepVec[10]) # ip3d
 
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))

@@ -13,7 +13,7 @@ from math import log
 
 import prep
 
-XXX, y = prep.prepData()
+XXX, y = prep.prepLearn()
 
 # Controls number of hidden dimensions
 n_input = len(XXX[0][0])

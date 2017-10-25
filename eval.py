@@ -81,10 +81,15 @@ with tf.Session() as sess:
 
 sess.close()
 
-varsToWrite = numpy.array([y_pred, re])
+varsToWrite = []
+varsToWrite.append(y_pred)
+varsToWrite.append(re)
 for var in vars:
   varsToWrite.append(var)
 
+#varsToWrite = numpy.array([y_pred, re])
+
+print(varsToWrite)
 
 # Keep only non-training portion
 for var in varsToWrite:

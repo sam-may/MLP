@@ -103,20 +103,21 @@ def prepEval(jsonFile):
     lepVec = d['lepVec']
     pfCands = d['X']
 
-    numpy.append(vars[0],lepVec[2]) # pt
-    numpy.append(vars[1],lepVec[0]) # eta  
-    numpy.append(vars[2],lepVec[1]) # phi
+    pt.append(lepVec[2])
+    eta.append(lepVec[0])
+    phi.append(lepVec[1])
 
-    enIn03, enOut03, nCands = calcPfEnergy(pfCands, lepVec)
+    enIn03, enOut03, nPfCands = calcPfEnergy(pfCands, lepVec)
 
-    numpy.append(vars[3],enIn03)
-    numpy.append(vars[4],enOut03)
-    numpy.append(vars[5],nCands)
-    numpy.append(vars[6],d['nvtx'])
-    numpy.append(vars[7],lepVec[10]) # ip3d
+    pf_energyIn03.append(enIn03)
+    pf_energyOut03.append(enOut03)
+    nCands.append(nPfCands)
+    nVtx.append(d['nvtx'])
+    ip3d.append(lepVec[10])
 
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))
+      break
 
   # This code pads each row with zeros to have the same number of instances. This allows for efficient representation of the whole dataset as a 3-d tensor. It is fairly wasteful in terms of memory but is necessary for efficient computation
   XXX = []
@@ -134,6 +135,8 @@ def prepEval(jsonFile):
   XXX = numpy.array(XXX)
 
   y = numpy.array(y, dtype = numpy.float32)
+
+  vars = numpy.array([pt, eta, phi, pf_energyIn03, pf_energyOut03, nCands, nVtx, ip3d])
 
   return XXX, y, re, vars
 

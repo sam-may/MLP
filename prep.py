@@ -17,7 +17,8 @@ def prepData():
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
-    x = [1,1.0/len(d['X'])] + d['lepVec'] # Per-row feature and constant feature
+    lepVec = d['lepVec']
+    x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant feature
     xx = d['X'] # Matrix of per-instance features
     XX.append(numpy.array(xx, dtype = numpy.float32))
     X.append(numpy.array(x, dtype = numpy.float32))
@@ -44,5 +45,5 @@ def prepData():
 
   y = numpy.array(y, dtype = numpy.float32)
 
-  return XXX, y
+  return XXX, y, re
 

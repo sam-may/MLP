@@ -28,7 +28,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
             tx.createBranch<Float_t>("mlp");
         }
         tx.setBranch<Float_t>("mlp", parser.mlp(looper.getCurrentEventIndex()));
-        looper.fillSkim();
+        if (isoml.lepton_flavor() == 1)
+            looper.fillSkim();
     }
     looper.saveSkim();
 }

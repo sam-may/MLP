@@ -13,3 +13,9 @@
 [submodule "babymaker/plottery"]
 	path = babymaker/plottery
 	url = git@github.com:aminnj/plottery.git
+[submodule "bdt/scripts"]
+	path = bdt/scripts
+	url = git@github.com:sgnoohc/scripts
+[submodule "bdt/rooutil"]
+	path = bdt/rooutil
+	url = git@github.com:sgnoohc/rooutil

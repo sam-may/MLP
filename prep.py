@@ -76,6 +76,7 @@ def prepEval(jsonFile):
   XXX = [] # Per-row features concatenated to per-instance features
   y = [] # label
   re = [] # relIso field used for baseline predictor
+  row = [] # event identifier
 
   pt = []
   eta = []
@@ -99,21 +100,22 @@ def prepEval(jsonFile):
     X.append(numpy.array(x, dtype = numpy.float32))
     re.append(d['lepton_relIso03EA'])
     y.append(d['lepton_isFromW'])
+    row.append(d['Row'])
 
     lepVec = d['lepVec']
     pfCands = d['X']
 
-    numpy.append(vars[0],lepVec[2]) # pt
-    numpy.append(vars[1],lepVec[0]) # eta  
-    numpy.append(vars[2],lepVec[1]) # phi
+    pt.append(lepVec[2])
+    eta.append(lepVec[0])
+    phi.append(lepVec[1])
 
-    enIn03, enOut03, nCands = calcPfEnergy(pfCands, lepVec)
+    enIn03, enOut03, nPfCands = calcPfEnergy(pfCands, lepVec)
 
-    numpy.append(vars[3],enIn03)
-    numpy.append(vars[4],enOut03)
-    numpy.append(vars[5],nCands)
-    numpy.append(vars[6],d['nvtx'])
-    numpy.append(vars[7],lepVec[10]) # ip3d
+    pf_energyIn03.append(enIn03)
+    pf_energyOut03.append(enOut03)
+    nCands.append(nPfCands)
+    nVtx.append(d['nvtx'])
+    ip3d.append(lepVec[10])
 
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))
@@ -135,5 +137,7 @@ def prepEval(jsonFile):
 
   y = numpy.array(y, dtype = numpy.float32)
 
-  return XXX, y, re, vars
+  vars = numpy.array([pt, eta, phi, pf_energyIn03, pf_energyOut03, nCands, nVtx, ip3d])
+
+  return XXX, y, row, re, vars
 

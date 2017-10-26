@@ -56,3 +56,18 @@ The rewgt factors are copied and saved to ```rewgt.C```.
 The following example zips the output from tensorflow which is saved in a text file ```../output_MLP.txt``` wrt to this directory with the IsoML_output.root
 
     run.sh -c zip_mlpoutputs_to_baby.C zipoutput.root t 100000 dummy ~/public_html/tasutil/IsoML_output.root
+
+An example of ```../output_MLP.txt``` will look like this
+
+    49965 0.9934547543525696
+    49967 0.9961197376251221
+    49969 0.9731799960136414
+    49971 0.9921365976333618
+    49973 0.9660279750823975
+    49975 0.9927423000335693
+    49977 0.8610332608222961
+    49979 0.9907755255699158
+    49981 0.9922897219657898
+    49983 0.9968879818916321
+
+The first column is the event index number in the TTree where we got the data for the TensorFlow, and the second column is the MLP output for that event.

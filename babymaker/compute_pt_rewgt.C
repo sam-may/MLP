@@ -56,6 +56,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
                 hists.fill(isoml.lepton_pt(), "h_mu_rewgt_pt_sig", 1., 90, 0., 90.);
                 hists.fill(fabs(isoml.lepton_eta()), "h_mu_rewgt_eta_sig", 1., netabins, etabins);
                 hists.fill(isoml.lepton_pt(), "h_mu_rewgtfine_pt_sig", 1., 90, 0., 90.);
+                hists.fill(isoml.lepton_pt(), "h_mu_rewgtsuperfine_pt_sig", 1., 200, 10., 50.);
                 hists.fill(fabs(isoml.lepton_eta()), "h_mu_rewgtfine_eta_sig", 1., netabins, etabins);
                 hists.fill(isoml.lepton_pt(), fabs(isoml.lepton_eta()), "h_mu_sf_sig", 1., nptbins, ptbins, netabins, etabins);
                 hists.fill(isoml.lepton_pt(), fabs(isoml.lepton_eta()), "h_mu_sf_sig_fine", 1., nptbinsfine, ptbinsfine, netabins, etabins);
@@ -67,6 +68,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
                 hists.fill(isoml.lepton_pt(), "h_mu_rewgt_pt_bkg", rewgt(isoml.lepton_pt(), isoml.lepton_eta()), 90, 0., 90.);
                 hists.fill(fabs(isoml.lepton_eta()), "h_mu_rewgt_eta_bkg", rewgt(isoml.lepton_pt(), isoml.lepton_eta()), netabins, etabins);
                 hists.fill(isoml.lepton_pt(), "h_mu_rewgtfine_pt_bkg", rewgtfine(isoml.lepton_pt(), isoml.lepton_eta()), 90, 0., 90.);
+                hists.fill(isoml.lepton_pt(), "h_mu_rewgtsuperfine_pt_bkg", rewgtfine(isoml.lepton_pt(), isoml.lepton_eta()), 200, 10., 50.);
                 hists.fill(fabs(isoml.lepton_eta()), "h_mu_rewgtfine_eta_bkg", rewgtfine(isoml.lepton_pt(), isoml.lepton_eta()), netabins, etabins);
                 hists.fill(isoml.lepton_pt(), fabs(isoml.lepton_eta()), "h_mu_sf_bkg", 1., nptbins, ptbins, netabins, etabins);
                 hists.fill(isoml.lepton_pt(), fabs(isoml.lepton_eta()), "h_mu_sf_bkg_fine", 1., nptbinsfine, ptbinsfine, netabins, etabins);

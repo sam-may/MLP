@@ -123,3 +123,21 @@ for i in xrange(1, ratio.GetNbinsX()+1):
         print i, j, ratio.GetBinContent(i, j)
 
 ply.plot_hist_2d(ratio, {"output_name":"fine_sf.png"})
+
+####################################################################################################
+
+h_mu_pt_sig = f.Get("h_mu_rewgtsuperfine_pt_sig").Clone("Prompt")
+h_mu_pt_bkg = f.Get("h_mu_rewgtsuperfine_pt_bkg").Clone("Fake")
+
+h_mu_pt_sig.Scale(1. / h_mu_pt_sig.Integral())
+h_mu_pt_bkg.Scale(1. / h_mu_pt_bkg.Integral())
+
+ratio = h_mu_pt_bkg.Clone("ratio")
+ratio.Divide(h_mu_pt_sig, h_mu_pt_bkg)
+
+for i in xrange(1, ratio.GetNbinsX()+1):
+    print ratio.GetBinContent(i), ratio.GetBinError(i)
+
+pw.plot_hist_1d(h_mu_pt_bkg, [h_mu_pt_sig], [], None, {"output_name":"h_rewgtsuperfine_mu_pt.png", "legend_ncolumns":1, "legend_datalabel":"Fake"})
+pw.plot_hist_1d(None, [ratio], [], None, {"output_name":"ratio_rewgtsuperfine_mu_sf.png", "legend_ncolumns":1})
+

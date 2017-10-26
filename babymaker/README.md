@@ -50,3 +50,9 @@ The plotter will then print out reweighting factors.
     $ python plot_rewgt.py
 
 The rewgt factors are copied and saved to ```rewgt.C```.
+
+# Zipping the MLP output from TensorFlow with the original lepton baby
+
+The following example zips the output from tensorflow which is saved in a text file ```../output_MLP.txt``` wrt to this directory with the IsoML_output.root
+
+    run.sh -c zip_mlpoutputs_to_baby.C zipoutput.root t 100000 dummy ~/public_html/tasutil/IsoML_output.root

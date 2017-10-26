@@ -47,7 +47,7 @@ index = 0
 #for d in parseData("parsed_IsoML.json.gz"):
 #for d in parseData("parsed_50000entries.json.gz"):
 #for d in parseData("parsed_100k.json.gz"):
-for d in parseData("babymaker/jsons/output_100k_v0.0.1.json.gz"):
+for d in parseData("babymaker/jsons/output_3M_v0.0.1.json.gz"):
   if d['lepton_flavor'] == 0: # To skip either muons or electrons
     continue
   # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
@@ -81,6 +81,8 @@ for d in parseData("babymaker/jsons/output_100k_v0.0.1.json.gz"):
   row.append(d['Row'])
   if (len(y) % 1000 == 0 and len(y)):
     print(len(y))
+  if (len(y)) > 100000:
+    break
   index += 1
 
 

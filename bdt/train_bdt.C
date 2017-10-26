@@ -80,8 +80,8 @@ void train_bdt()
     // -----------------------------
     //  Input File & Tree
     // -----------------------------
-    TFile* inputSignal = TFile::Open("/hadoop/cms/store/user/phchang/mlp/output_MLP_muon_25ktrain_25ktest_1000epoch_julianOriginal.root");
-    TFile* inputBkg    = TFile::Open("/hadoop/cms/store/user/phchang/mlp/output_MLP_muon_25ktrain_25ktest_1000epoch_julianOriginal.root");
+    TFile* inputSignal = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
+    TFile* inputBkg    = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
     TTree *signal     = (TTree*)inputSignal->Get("t");
     TTree *background = (TTree*)inputBkg->Get("t");
     // global event weights per tree (see below for setting event-wise weights)
@@ -94,12 +94,17 @@ void train_bdt()
     //  Training
     // ---------------------------
     // Apply additional cuts on the signal and background samples (can be different)
-    TString prepare_nevents = "nTrain_Signal=1000:nTrain_Background=1000:nTest_Signal=1000:nTest_Background=1000:SplitMode=Alternate:NormMode=NumEvents:!V";
+
+    //root [2] t->Draw("1", "lepton_isFromW==1&&lepton_flavor==1", "goff")
+    //(Long64_t) 1439065
+    //root [3] t->Draw("1", "lepton_isFromW==0&&lepton_flavor==1", "goff")
+    //(Long64_t) 193401
+    TString prepare_nevents = "nTrain_Signal=719532:nTrain_Background=96700:nTest_Signal=719532:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
     factory->PrepareTrainingAndTestTree("lepton_isFromW==1", "lepton_isFromW==0", prepare_nevents);
     factory->SetSignalWeightExpression("1");
     factory->SetBackgroundWeightExpression("1");
 
-    TString option = "!H:V:NTrees=200:BoostType=Grad:Shrinkage=0.10:!UseBaggedGrad:nCuts=2000:MinNodeSize=0.1%:PruneStrength=5:PruneMethod=CostComplexity:MaxDepth=3:CreateMVAPdfs";
+    TString option = "!H:V:NTrees=1000:BoostType=Grad:Shrinkage=0.10:!UseBaggedGrad:nCuts=2000:MinNodeSize=0.1%:PruneStrength=5:PruneMethod=CostComplexity:MaxDepth=3:CreateMVAPdfs";
     factory->BookMethod(TMVA::Types::kBDT, "BDT", option);
     factory->TrainAllMethods();
     factory->TestAllMethods();

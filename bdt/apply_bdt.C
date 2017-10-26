@@ -38,7 +38,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     reader->AddVariable("lepton_dxy", &lepton_dxy);
     reader->AddVariable("lepton_dz", &lepton_dz);
     reader->AddVariable("lepton_ip3d", &lepton_ip3d);
-    reader->BookMVA("BDT", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.1__preliminary_11lepvec_1000events/TMVA_BDT.weights.xml");
+    reader->BookMVA("BDT", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.2__preliminary_11lepvec_1Msig_100Kbkg_events/TMVA_BDT.weights.xml");
 
     // Main event loop
     while (looper.nextEvent())

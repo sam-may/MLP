@@ -47,6 +47,7 @@ def makePfCandVec(N, lepVec, pfCands): # returns vector of pT, deltaR, and type 
 def createLepVec(d, options):
   lepVec = d['lepVec']
   pfCands = d['X']
+  if options == 5:
     lepVec = makePfCandVec(5, lepVec, pfCands)
   if options == 6: 
     lepVec = makePfCandVec(1, lepVec, pfCands)

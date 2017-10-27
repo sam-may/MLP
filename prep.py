@@ -1,4 +1,4 @@
-import gzip
+import gzsip
 import numpy
 
 import math
@@ -44,6 +44,14 @@ def makePfCandVec(N, lepVec, pfCands): # returns vector of pT, deltaR, and type 
           lepVec.append(0)
   return lepVec 
 
+def createLepVec(d, options):
+  lepVec = d['lepVec']
+  if options == 5:
+    N = 5
+    pfCands = d['X']
+    lepVec = makePfCandVec(N, lepVec, pfCands)
+   return lepVec
+
 def prepLearn(jsonFile, options=0):
   # options = 0: Julian's original MLP
   # options = 5: Julian's original MLP + pT, DeltaR, and type of highest 5 pT pf cands
@@ -58,11 +66,7 @@ def prepLearn(jsonFile, options=0):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
-    lepVec = d['lepVec']
-    if options == 5:
-      N = 5
-      pfCands = d['X']
-      lepVec = makePfCandVec(N, lepVec, pfCands)
+    lepVec = createLepVec(d, options)
     x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant features
     xx = d['X'] # Matrix of per-instance features
     XX.append(numpy.array(xx, dtype = numpy.float32))
@@ -114,11 +118,7 @@ def prepEval(jsonFile, options=0):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
-    lepVec = d['lepVec']
-    if options == 5:
-      N = 5
-      pfCands = d['X']
-      lepVec = makePfCandVec(N, lepVec, pfCands)
+    lepVec = createLepVec(d, options) 
     x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant feature
     xx = d['X'] # Matrix of per-instance features
     XX.append(numpy.array(xx, dtype = numpy.float32))

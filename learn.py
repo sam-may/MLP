@@ -21,7 +21,7 @@ import prep
 if len(sys.argv) == 1:
   nEpochs = 1000
   options = 0
-elif len(sys.arv) == 3:
+elif len(sys.argv) == 3:
   nEpochs = int(sys.argv[2])
   options = int(sys.argv[1])
 else:

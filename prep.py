@@ -8,7 +8,46 @@ def parseData(fname):
   for l in gzip.open(fname):
     yield eval(l)
 
-def prepLearn(jsonFile):
+
+def deltaR(phi1, eta1, phi2, eta2):
+    dphi = math.acos(math.cos(phi1-phi2))
+    deta = eta1-eta2
+    return math.sqrt( dphi**2 + deta**2)
+
+def calcPfEnergy(pfCands, lepVec):
+  enIn03 = 0
+  enOut03 = 0
+
+  nCands = len(pfCands)
+  for i in range(nCands):
+    dR = deltaR(lepVec[1], lepVec[0], pfCands[i][1], pfCands[i][0])
+    if dR >= 0.3:
+      enOut03 += pfCands[i][2]
+    else:
+      if pfCands[i][5] == 1 and dR < 0.05: # check if pf cand is lepton itself
+        continue # don't include
+      else:
+        enIn03 += pfCands[i][2]
+
+  return enIn03, enOut03, nCands
+
+def makePfCandVec(N, lepVec, pfCands): # returns vector of pT, deltaR, and type of the N highest energy N pf cands 
+  nCands = len(pfCands)
+  for i in range(N):
+    if i < nCands:
+      lepVec.append(pfCands[i][2]) # pT
+      lepVec.append(deltaR(lepVec[1], lepVec[0], pfCands[i][1], pfCands[i][0]))
+      for j in range(7):
+          lepVec.append(pfCands[i][j+4])
+    else:
+      for j in range(9):
+          lepVec.append(0)
+  return lepVec 
+
+def prepLearn(jsonFile, options=0):
+  # options = 0: Julian's original MLP
+  # options = 5: Julian's original MLP + pT, DeltaR, and type of highest 5 pT pf cands
+
   X = [] # Per-row features
   XX = [] # Per-instance features
   XXX = [] # Per-row features concatenated to per-instance features
@@ -20,6 +59,10 @@ def prepLearn(jsonFile):
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
     lepVec = d['lepVec']
+    if options == 5:
+      N = 5
+      pfCands = d['X']
+      lepVec = makePfCandVec(N, lepVec, pfCands)
     x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant feature
     xx = d['X'] # Matrix of per-instance features
     XX.append(numpy.array(xx, dtype = numpy.float32))
@@ -48,29 +91,7 @@ def prepLearn(jsonFile):
 
   return XXX, y
 
-def deltaR(phi1, eta1, phi2, eta2):
-    dphi = math.acos(math.cos(phi1-phi2))
-    deta = eta1-eta2
-    return math.sqrt( dphi**2 + deta**2)
-
-def calcPfEnergy(pfCands, lepVec):
-  enIn03 = 0
-  enOut03 = 0
-
-  nCands = len(pfCands)
-  for i in range(nCands):
-    dR = deltaR(lepVec[1], lepVec[0], pfCands[i][1], pfCands[i][0])
-    if dR >= 0.3:
-      enOut03 += pfCands[i][2]
-    else:
-      if pfCands[i][5] == 1 and dR < 0.05: # check if pf cand is lepton itself
-        continue # don't include
-      else:
-        enIn03 += pfCands[i][2]
-
-  return enIn03, enOut03, nCands
-
-def prepEval(jsonFile):
+def prepEval(jsonFile, options=0): 
   X = [] # Per-row features
   XX = [] # Per-instance features
   XXX = [] # Per-row features concatenated to per-instance features
@@ -94,6 +115,10 @@ def prepEval(jsonFile):
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
     lepVec = d['lepVec']
+    if options == 5:
+      N = 5
+      pfCands = d['X']
+      lepVec = makePfCandVec(N, lepVec, pfCands)
     x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant feature
     xx = d['X'] # Matrix of per-instance features
     XX.append(numpy.array(xx, dtype = numpy.float32))

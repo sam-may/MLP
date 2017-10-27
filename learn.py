@@ -13,7 +13,10 @@ from math import log
 
 import prep
 
-XXX, y = prep.prepLearn("../convertJson/parsed_100k_nvtx.json.gz")
+# options = 0 # Julian's original MLP
+options = 5 # add pT, deltaR, and type of top 5 pf Cands
+
+XXX, y = prep.prepLearn("../convertJson/parsed_100k_nvtx.json.gz", options)
 
 # Controls number of hidden dimensions
 n_input = len(XXX[0][0])
@@ -22,7 +25,7 @@ n_hidden_2 = 16
 n_hidden_3 = 16
 
 # Fraction of data used for training
-n_train = int(len(XXX) / 100)
+n_train = int(len(XXX) / 2)
 
 weights = {
     'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])), # Weights
@@ -76,7 +79,7 @@ sess = tf.Session()
 sess.run(init)
 
 # Run several iterations of gradient descent
-for iteration in range(10):
+for iteration in range(1000):
   cvalues = sess.run([train, objective])
   print("objective = " + str(cvalues[1]))
 

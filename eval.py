@@ -14,7 +14,10 @@ from math import log
 
 import prep
 
-XXX, y, row, re, vars = prep.prepEval("../convertJson/parsed_100k_nvtx.json.gz")
+# options = 0 # Julian's original MLP
+options = 5 # add pT, deltaR, and type of top 5 pf Cands
+
+XXX, y, row, re, vars = prep.prepEval("../convertJson/parsed_100k_nvtx.json.gz", options)
 
 # Controls number of hidden dimensions
 n_input = len(XXX[0][0])
@@ -23,7 +26,7 @@ n_hidden_2 = 16
 n_hidden_3 = 16
 
 # Fraction of data used for training
-n_train = int(len(XXX) / 100)
+n_train = int(len(XXX) / 2)
 
 weights = {
     'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])), # Weights
@@ -84,27 +87,27 @@ sess.close()
 varsToWrite = []
 varsToWrite.append(row)
 varsToWrite.append(y_pred)
-varsToWrite.append(re)
-for var in vars:
-  varsToWrite.append(var)
+# varsToWrite.append(re)
+# for var in vars:
+#   varsToWrite.append(var)
 
 # Keep only non-training portion
-for var in varsToWrite:
-  var = list(numpy.array(var))[n_train:]
+for i in range(len(varsToWrite)):
+  if i == 1:
+    continue # y_preds were only calculated for second half of data
+  varsToWrite[i] = list(numpy.array(varsToWrite[i]))[n_train:]
 
 n_test = len(varsToWrite[1])
 
 # Save to txt file
-fileName = 'data.txt'
+fileName = 'output_MLP.txt'
 file = open(fileName, 'w')
 
 for i in range(n_test):
   for j in range(len(varsToWrite)):
     if j != len(varsToWrite) - 1:
-      file.write("%.9f," % varsToWrite[j][i])
+      file.write("%.9f " % varsToWrite[j][i])
     else:
       file.write("%.9f\n" % varsToWrite[j][i])    
 
 file.close()
-
-

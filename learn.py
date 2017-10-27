@@ -18,14 +18,15 @@ import prep
 # Arg1 = options (0 = Julian's original MLP, 5 = add pT, deltaR, and type of top 5 pf Cands
 # Arg2 = number of training epochs
 
-if len(sys.argv) == 0:
+if len(sys.argv) == 1:
   nEpochs = 1000
   options = 0
-elif len(sys.arv) == 2:
-  nEpochs = int(sys.argv[1])
-  options = int(sys.argv[0])
+elif len(sys.arv) == 3:
+  nEpochs = int(sys.argv[2])
+  options = int(sys.argv[1])
 else:
   print('You did not supply the correct number of arguments (0 or 2)') 
+  sys.exit(0)
 
 XXX, y = prep.prepLearn("../convertJson/parsed_100k_nvtx.json.gz", options)
 

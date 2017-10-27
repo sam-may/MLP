@@ -17,10 +17,11 @@ import prep
 
 # parse args
 # Arg 1: options (0 = Julian's original MLP, 5 = add pT, deltaR, and type of top 5 pf Cands)
-if len(sys.argv) == 0:
+
+if len(sys.argv) == 1:
   options = 0
-elif len(sys.argv) == 1:
-  options = int(sys.argv[0])
+elif len(sys.argv) == 2:
+  options = int(sys.argv[1])
 
 XXX, y, row, re, vars = prep.prepEval("../convertJson/parsed_100k_nvtx.json.gz", options)
 

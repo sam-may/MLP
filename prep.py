@@ -1,4 +1,4 @@
-import gzsip
+import gzip
 import numpy
 
 import math
@@ -50,7 +50,7 @@ def createLepVec(d, options):
     N = 5
     pfCands = d['X']
     lepVec = makePfCandVec(N, lepVec, pfCands)
-   return lepVec
+  return lepVec
 
 def prepLearn(jsonFile, options=0):
   # options = 0: Julian's original MLP
@@ -69,6 +69,8 @@ def prepLearn(jsonFile, options=0):
     lepVec = createLepVec(d, options)
     x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant features
     xx = d['X'] # Matrix of per-instance features
+    if options == 6:
+      xx = numpy.array(xx, dtype = numpy.float32)
     XX.append(numpy.array(xx, dtype = numpy.float32))
     X.append(numpy.array(x, dtype = numpy.float32))
     re.append(d['lepton_relIso03EA'])

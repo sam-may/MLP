@@ -46,10 +46,10 @@ def makePfCandVec(N, lepVec, pfCands): # returns vector of pT, deltaR, and type 
 
 def createLepVec(d, options):
   lepVec = d['lepVec']
-  if options == 5:
-    N = 5
-    pfCands = d['X']
-    lepVec = makePfCandVec(N, lepVec, pfCands)
+  pfCands = d['X']
+    lepVec = makePfCandVec(5, lepVec, pfCands)
+  if options == 6: 
+    lepVec = makePfCandVec(1, lepVec, pfCands)
   return lepVec
 
 def prepLearn(jsonFile, options=0):

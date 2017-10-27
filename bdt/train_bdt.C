@@ -65,9 +65,9 @@ void train_bdt()
     //pf_HFEM         = (vector<int>*)0x3ce1800
     //mlp             = -999
 
-    factory->AddVariable("lepton_eta", 'F');
-    factory->AddVariable("lepton_phi", 'F');
-    factory->AddVariable("lepton_pt", 'F');
+//    factory->AddVariable("lepton_eta", 'F');
+//    factory->AddVariable("lepton_phi", 'F');
+//    factory->AddVariable("lepton_pt", 'F');
     factory->AddVariable("lepton_relIso03EA", 'F');
     factory->AddVariable("lepton_chiso", 'F');
     factory->AddVariable("lepton_nhiso", 'F');
@@ -99,8 +99,12 @@ void train_bdt()
     //(Long64_t) 1439065
     //root [3] t->Draw("1", "lepton_isFromW==0&&lepton_flavor==1", "goff")
     //(Long64_t) 193401
-    TString prepare_nevents = "nTrain_Signal=719532:nTrain_Background=96700:nTest_Signal=719532:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
-    factory->PrepareTrainingAndTestTree("lepton_isFromW==1", "lepton_isFromW==0", prepare_nevents);
+    //(long long) 11780
+    //root [3] t->Draw("1", "lepton_isFromW==1&&lepton_flavor==1")
+    //(long long) 88168
+    //TString prepare_nevents = "nTrain_Signal=44084:nTrain_Background=5890:nTest_Signal=44084:nTest_Background=5890:SplitMode=Alternate:NormMode=NumEvents:!V";
+    TString prepare_nevents = "nTrain_Signal=100000:nTrain_Background=96700:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
+    factory->PrepareTrainingAndTestTree("lepton_isFromW==1&&lepton_flavor==1", "lepton_isFromW==0&&lepton_flavor==1", prepare_nevents);
     factory->SetSignalWeightExpression("1");
     factory->SetBackgroundWeightExpression("1");
 

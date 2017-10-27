@@ -16,6 +16,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     looper.setSkim(output_name);
 
     TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+    TMVA::Reader* reader2 = new TMVA::Reader("!Color:!Silent");
     float lepton_eta;
     float lepton_phi;
     float lepton_pt;
@@ -39,6 +40,16 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     reader->AddVariable("lepton_dz", &lepton_dz);
     reader->AddVariable("lepton_ip3d", &lepton_ip3d);
     reader->BookMVA("BDT", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.2__preliminary_11lepvec_1Msig_100Kbkg_events/TMVA_BDT.weights.xml");
+    reader->BookMVA("BDT2", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.3__preliminary_11lepvec_50ksig_5kbkg_events/TMVA_BDT.weights.xml");
+    reader2->AddVariable("lepton_relIso03EA", &lepton_relIso03EA);
+    reader2->AddVariable("lepton_chiso", &lepton_chiso);
+    reader2->AddVariable("lepton_nhiso", &lepton_nhiso);
+    reader2->AddVariable("lepton_emiso", &lepton_emiso);
+    reader2->AddVariable("lepton_ncorriso", &lepton_ncorriso);
+    reader2->AddVariable("lepton_dxy", &lepton_dxy);
+    reader2->AddVariable("lepton_dz", &lepton_dz);
+    reader2->AddVariable("lepton_ip3d", &lepton_ip3d);
+    reader2->BookMVA("BDT3", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.4__nolepp4/TMVA_BDT.weights.xml");
 
     // Main event loop
     while (looper.nextEvent())
@@ -47,6 +58,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         {
             tx.setTree(looper.getSkimTree());
             tx.createBranch<Float_t>("bdt");
+            tx.createBranch<Float_t>("bdt2");
+            tx.createBranch<Float_t>("bdt3");
         }
         lepton_eta           = isoml.lepton_eta();
         lepton_phi           = isoml.lepton_phi();
@@ -60,6 +73,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         lepton_dz            = isoml.lepton_dz();
         lepton_ip3d          = isoml.lepton_ip3d();
         tx.setBranch<Float_t>("bdt", reader->EvaluateMVA("BDT"));
+        tx.setBranch<Float_t>("bdt2", reader->EvaluateMVA("BDT2"));
+        tx.setBranch<Float_t>("bdt3", reader2->EvaluateMVA("BDT3"));
         looper.fillSkim();
     }
     looper.saveSkim();

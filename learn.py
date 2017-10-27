@@ -10,11 +10,22 @@ import urllib
 import random
 from math import exp
 from math import log
+import sys
 
 import prep
 
-# options = 0 # Julian's original MLP
-options = 5 # add pT, deltaR, and type of top 5 pf Cands
+# Parse args
+# Arg1 = options (0 = Julian's original MLP, 5 = add pT, deltaR, and type of top 5 pf Cands
+# Arg2 = number of training epochs
+
+if len(sys.argv) == 0:
+  nEpochs = 1000
+  options = 0
+elif len(sys.arv) == 2:
+  nEpochs = int(sys.argv[1])
+  options = int(sys.argv[0])
+else:
+  print('You did not supply the correct number of arguments (0 or 2)') 
 
 XXX, y = prep.prepLearn("../convertJson/parsed_100k_nvtx.json.gz", options)
 
@@ -79,7 +90,7 @@ sess = tf.Session()
 sess.run(init)
 
 # Run several iterations of gradient descent
-for iteration in range(1000):
+for iteration in range(10000):
   cvalues = sess.run([train, objective])
   print("objective = " + str(cvalues[1]))
 

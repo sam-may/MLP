@@ -11,11 +11,16 @@ import urllib
 import random
 from math import exp
 from math import log
+import sys
 
 import prep
 
-# options = 0 # Julian's original MLP
-options = 5 # add pT, deltaR, and type of top 5 pf Cands
+# parse args
+# Arg 1: options (0 = Julian's original MLP, 5 = add pT, deltaR, and type of top 5 pf Cands)
+if len(sys.argv) == 0:
+  options = 0
+elif len(sys.argv) == 1:
+  options = int(sys.argv[0])
 
 XXX, y, row, re, vars = prep.prepEval("../convertJson/parsed_100k_nvtx.json.gz", options)
 
@@ -105,7 +110,9 @@ file = open(fileName, 'w')
 
 for i in range(n_test):
   for j in range(len(varsToWrite)):
-    if j != len(varsToWrite) - 1:
+    if j == 0:
+      file.write("%d " % varsToWrite[j][i])
+    elif j != len(varsToWrite) - 1:
       file.write("%.9f " % varsToWrite[j][i])
     else:
       file.write("%.9f\n" % varsToWrite[j][i])    

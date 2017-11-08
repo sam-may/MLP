@@ -10,5 +10,5 @@ The "pf cand image" is a `nR x nAlpha x 6` array which contains the sum of pf ca
 ![alt tag](http://uaf-10.t2.ucsd.edu/~sjmay/MLP/pfCandImage.png)
 
 ### Modifying pf cand image
-1. The number of annuli around the lepton can be modified by changing the value of `nR`.
-2. The number of angular sections can be modified by changing the value of `nAlpha`. For example, `nAlpha = 4` splits the cone around the lepton into 4 90-degree sections. `nAlpha = 1` corresponds to a 1-d grid.  
+1. The number of annuli around the lepton can be modified by changing the value of `nR`. `nR = 5` is shown in the image above.
+2. The number of angular sections can be modified by changing the value of `nAlpha`. For example, `nAlpha = 4` splits the cone around the lepton into 4 90-degree sections. `nAlpha = 1` corresponds to a 1-d grid. `nAlpha = 8` is shown in the image above. 

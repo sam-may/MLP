@@ -5,7 +5,9 @@ The file learn_grid.py loops through events in a `.json` file and creates a 1-d 
 After parsing the data, the remainder of the file is left identical to Julian's original `learn.py`.
 
 # Pf Cand Image
-The "pf cand image" is a `nR x nAlpha x 6` array which contains the sum of pf candidate energies, sorted by the type of pf candidate and location relative to the lepton. For example, the `[i][j][k]`th element of the array tells us how much energy of particle type `k` is contained in the `j`th angular portion of the `i`th annulus.
+For each event, we summarize the information contained in the pf candidates with an "image". Rather than providing information about the pf candidates in a 2-d array which contains `N` 11-variable vectors, one for each of the `N` pf candidates in the event, information about the pf candidates is now provided in a 3-d array: the "pf cand image". The pf cand image is a 3-d `nR x nAlpha x 6` array which contains the sum of pf candidate energies, sorted by the type of pf candidate and location relative to the lepton. For example, the `[i][j][k]`th element of the array tells us how much energy of particle type `k` is contained in the `j`th angular portion of the `i`th annulus about the lepton.
+
+A traditional color image has 3 color (RGB) values for each pixel, a pf cand image has 6 "color" values for each pixel.
 
 ![alt tag](http://uaf-10.t2.ucsd.edu/~sjmay/MLP/pfCandImage.png)
 

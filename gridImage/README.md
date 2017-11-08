@@ -7,6 +7,8 @@ After parsing the data, the remainder of the file is left identical to Julian's 
 # Pf Cand Image
 The "pf cand image" is a `nR x nAlpha x 6` array which contains the sum of pf candidate energies, sorted by the type of pf candidate and location relative to the lepton. For example, the `[i][j][k]`th element of the array tells us how much energy of particle type `k` is contained in the `j`th angular portion of the `i`th annulus.
 
+![alt tag](http://uaf-10.t2.ucsd.edu/~sjmay/MLP/pfCandImage.png)
+
 ### Modifying pf cand image
 1. The number of annuli around the lepton can be modified by changing the value of `nR`.
 2. The number of angular sections can be modified by changing the value of `nAlpha`. For example, `nAlpha = 4` splits the cone around the lepton into 4 90-degree sections. `nAlpha = 1` corresponds to a 1-d grid.  

@@ -1,6 +1,9 @@
 # Image-based approach to particle flow candidates
 
-The file learn_grid.py loops through events in a `.json` file and creates a 1-d array containing the 11 lepton vector variables ("lepton vector") and a 3-d array containing the particle flow candidate summary variables ("pf cand image"). It appends each lepton vector and each pf cand image to arrays which are then 2-d and 4-d, respectively.
+The file `learn_grid.py` loops through events in a `.json` file and creates a 1-d array containing the 11 lepton vector variables ("lepton vector") and a 3-d array containing the particle flow candidate summary variables ("pf cand image"). It appends each lepton vector and each pf cand image to arrays which are then 2-d and 4-d, respectively.
+
+Main difference between `learn_grid.py` and Julian's original `learn.py`:
+1. In `learn.py` the variable `XX` was a 3-d array: we stored an 11-variable pf candidate vector (dimension 3) for each pf candidate (dimension 2) in each event (dimension 1). In `learn_grid.py`, the variables `XX` is a 4-d array: we store the energy sum for each type of pf candidate (dimension 4) in each angular section around the lepton (dimension 3) in each radial annulus around the lepton (dimension 2) for each event (dimension 1).  
 
 After parsing the data, the remainder of the file is left identical to Julian's original `learn.py`.
 

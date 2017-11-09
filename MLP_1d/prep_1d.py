@@ -27,14 +27,14 @@ def prepLearn(jsonFile, options=0):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
       continue
     # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
-    lepVec = createLepVec(d, options)
-    x = [1,1.0/len(d['X'])] + lepVec # Per-row feature and constant features
+    x = [1,1.0/len(d['X'])] + d['lepVec'] # Per-row feature and constant features
     X.append(numpy.array(x, dtype = numpy.float32))
     re.append(d['lepton_relIso03EA'])
     y.append(d['lepton_isFromW'])
     row.append(d['Row'])
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))
+      break #FIXME
 
   X = numpy.array(X)
   y = numpy.array(y, dtype = numpy.float32)

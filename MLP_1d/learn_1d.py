@@ -23,59 +23,50 @@ import prep_1d
 if len(sys.argv) == 5:
   nEpochs = int(sys.argv[2])
   options = int(sys.argv[1])
-  nLayers = int(sys.argv[3])
+  nHiddenLayers = int(sys.argv[3])
   training_name = str(sys.argv[4])
 else:
   print('Incorrect number of arguments')
   exit(1)
 
-X, y, row = prep_1d.prepLearn("../convertJson/parsed_100k_nvtx.json.gz", options)
+X, y, row = prep_1d.prepLearn("../../convertJson/parsed_100k_nvtx.json.gz", options)
 
 # Controls number of hidden dimensions
 n_input = len(X[0])
-n_hidden_1 = 16
-n_hidden_2 = 16
-n_hidden_3 = 16
+n_hidden = 30
 
 # Fraction of data used for training
 n_train = int(len(X) / 2)
 
 weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])), # Weights
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
-    'h3': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3])),
-    'out': tf.Variable(tf.random_normal([n_hidden_3, 1])),
-    'b1': tf.Variable(tf.random_normal([n_hidden_1])), # Bias terms
-    'b2': tf.Variable(tf.random_normal([n_hidden_2])),
-    'b3': tf.Variable(tf.random_normal([n_hidden_3])),
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden])), # Weights
+    'out': tf.Variable(tf.random_normal([n_hidden, 1])),
+    'b1': tf.Variable(tf.random_normal([n_hidden])), # Bias terms
     'bout': tf.Variable(tf.random_normal([1]))
 }
 
-# MLP layers applied to individual instances
-def multilayer_perceptron1(x, weights):
-  layer_1 = tf.einsum('ijk,kl->ijl', x, weights['h1']) + weights['b1']
-  layer_1 = tf.nn.sigmoid(layer_1)
-  layer_2 = tf.einsum('ijk,kl->ijl', layer_1, weights['h2']) + weights['b2']
-  layer_2 = tf.nn.sigmoid(layer_2)
-  return layer_2
+for i in range(nHiddenLayers):
+  weights['h'+str(i+2)] = tf.Variable(tf.random_normal([n_hidden, n_hidden]))
+  weights['b'+str(i+2)] = tf.Variable(tf.random_normal([n_hidden]))
 
-# MLP layers applied to aggregated instances
-def multilayer_perceptron2(x, weights):
-  layer_1 = tf.einsum('ik,kl->il', x, weights['h3']) + weights['b3']
+def multilayer_perceptron(x, weights):
+  layer_1 = tf.einsum('ij,jk->ik', x, weights['h1']) + weights['b1']
   layer_1 = tf.nn.sigmoid(layer_1)
-  layer_out = tf.einsum('ik,kl->il', layer_1, weights['out']) + weights['bout']
+  layer_prev = layer_1
+  for i in range(nHiddenLayers):
+    layer_n = tf.einsum('ij,jk->ik', layer_prev, weights['h'+str(i+2)]) + weights['b'+str(i+2)]
+    layer_n = tf.nn.sigmoid(layer_n)
+    layer_prev = layer_n
+  layer_out = tf.einsum('ij,jk->ik', layer_prev, weights['out']) + weights['bout']
   layer_out = tf.nn.sigmoid(layer_out)
   return layer_out
 
-# Combine both layers
 def predictor(mat, weights):
-  responses = multilayer_perceptron1(mat, weights)
-  responses = tf.reduce_mean(responses, reduction_indices = 1, keep_dims = False)
-  return multilayer_perceptron2(responses, weights)
+  return multilayer_perceptron(mat, weights)
 
 # Regular logistic loss
 def loss(X, y, weights):
-  preds = tf.squeeze(predictor(X, weights))
+  preds = tf.squeeze(multilayer_perceptron(X, weights))
   cross_entropy_f = y * tf.log(tf.clip_by_value(preds,1e-10,1.0))
   cross_entropy_f1 = (1 - y) * tf.log(tf.clip_by_value(1 - preds,1e-10,1.0))
   mce = tf.reduce_mean(cross_entropy_f) + tf.reduce_mean(cross_entropy_f1)
@@ -92,17 +83,17 @@ sess = tf.Session()
 sess.run(init)
 
 # Run several iterations of gradient descent
-for iteration in range(10000):
+for iteration in range(nEpochs):
   cvalues = sess.run([train, objective])
   print("objective = " + str(cvalues[1]))
 
-train_details = "Opts" + str(options) + "_Epochs" + str(nEpochs) + "_Layers" + str(nLayers)
+train_details = "Opts" + str(options) + "_Epochs" + str(nEpochs) + "_Layers" + str(nHiddenLayers)
 save_name = "checkpoints/weights_" + train_details + ".ckpt"
 save_path = saver.save(sess, save_name)
 
 # Evaluate the model's predictions
 with sess.as_default():
-  preds = tf.squeeze(predictor(tf.constant(XXX[n_train:]),  weights))
+  preds = tf.squeeze(predictor(tf.constant(X[n_train:]),  weights))
   y_pred = preds.eval()
 
 sess.close()

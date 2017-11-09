@@ -99,7 +99,7 @@ nAlpha = 20 	# set nAlpha = 1 for a 1-d grid in increasing radii (i.e. annului)
 ### For each event, grab lepton vector and summary variable "image" (nR x nAlpha x 6 array) ###
 ###############################################################################################
 
-for d in parseData("../parsed_100k.json.gz"):
+for d in parseData("../../parsed_100k.json.gz"):
   if d['lepton_flavor'] == 0: # To skip either muons or electrons
     continue
   # TODO: Not sure if the feature encoding the number of instances should be represented differently or is of any use?
@@ -117,6 +117,7 @@ for d in parseData("../parsed_100k.json.gz"):
 ###########################################
 ### Remainder of file is left unchanged ###
 ###########################################
+# Note: program will crash after this point since I have changed XX from 3-d -> 4-d
 
 # This code pads each row with zeros to have the same number of instances. This allows for efficient representation of the whole dataset as a 3-d tensor. It is fairly wasteful in terms of memory but is necessary for efficient computation
 XXX = []

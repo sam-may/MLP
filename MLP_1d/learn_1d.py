@@ -20,11 +20,12 @@ import prep_1d
 # Arg3 = number of layers
 # Arg4 = save name
 
-if len(sys.argv) == 5:
+if len(sys.argv) == 6:
   nEpochs = int(sys.argv[2])
   options = int(sys.argv[1])
   nHiddenLayers = int(sys.argv[3])
   training_name = str(sys.argv[4])
+  nNodes = int(sys.argv[5])
 else:
   print('Incorrect number of arguments')
   exit(1)
@@ -33,7 +34,7 @@ X, y, row = prep_1d.prepLearn("../../convertJson/parsed_200k_nvtx.json.gz", opti
 
 # Controls number of hidden dimensions
 n_input = len(X[0])
-n_hidden = 50
+n_hidden = nNodes
 
 # Fraction of data used for training
 n_train = int(len(X) / 2)

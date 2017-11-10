@@ -4,10 +4,6 @@
 # arg2: options for learning 
 # arg3: number of training epochs
 # arg4: number of layers
+# arg6: number of nodes
 
-python3 learn_1d.py $2 $3 $4 $1
-cp checkpoints/output_MLP_$1.txt ../output_MLP.txt
-
-#cd ../babymaker
-#source scripts/setup.sh
-#run.sh -c zip_mlpoutputs_to_baby.C $1.root t 100000 dummy ../../../IsoML_output.root
+python3 learn_1d.py $2 $3 $4 $1 $5

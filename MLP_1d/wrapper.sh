@@ -6,7 +6,7 @@
 # arg4: number of layers
 
 python3 learn_1d.py $2 $3 $4 $1
-cp checkpoints/output_MLP_$1.txt ../MLP_output.txt
+cp checkpoints/output_MLP_$1.txt ../output_MLP.txt
 
 #cd ../babymaker
 #source scripts/setup.sh

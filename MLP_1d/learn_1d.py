@@ -29,11 +29,11 @@ else:
   print('Incorrect number of arguments')
   exit(1)
 
-X, y, row = prep_1d.prepLearn("../../convertJson/parsed_100k_nvtx.json.gz", options)
+X, y, row = prep_1d.prepLearn("../../convertJson/parsed_200k_nvtx.json.gz", options)
 
 # Controls number of hidden dimensions
 n_input = len(X[0])
-n_hidden = 30
+n_hidden = 50
 
 # Fraction of data used for training
 n_train = int(len(X) / 2)

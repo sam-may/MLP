@@ -83,7 +83,7 @@ def calcSummaryVariables(nR, nAlpha, lepVec, pfCandMatrix):
 ### Summary Variables ### 
 #########################
      
-nSumVars = 6 	# the 6 summary variables for each grid slice are the energy sums for the 6 types of pf candidates:
+nSumVars = 7 	# the 6 summary variables for each grid slice are the energy sums for the 6 types of pf candidates:
 	     	# electrons, muons, charged hadrons, neutral EM particles, neutral hadronic particles, HF EM, and HF hadrons
 # Granularity of grid
 nR = 20

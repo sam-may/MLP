@@ -34,21 +34,27 @@ X, y, row = prep_1d.prepLearn("../../convertJson/parsed_200k_nvtx.json.gz", opti
 
 # Controls number of hidden dimensions
 n_input = len(X[0])
-n_hidden = nNodes
+n_hidden = nNodes*numpy.ones(nHiddenLayers)
+
+n_nodes = numpy.empty(nHiddenLayers+1)
+for i in range(len(n_nodes)):
+  n_nodes[i] = int(nNodes/float(2**i))
+  print(n_nodes[i])
+
 
 # Fraction of data used for training
 n_train = int(len(X) / 2)
 
 weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden])), # Weights
-    'out': tf.Variable(tf.random_normal([n_hidden, 1])),
-    'b1': tf.Variable(tf.random_normal([n_hidden])), # Bias terms
+    'h1': tf.Variable(tf.random_normal([n_input, nNodes])), # Weights
+    'out': tf.Variable(tf.random_normal([int(n_nodes[len(n_nodes)-1]), 1])),
+    'b1': tf.Variable(tf.random_normal([nNodes])), # Bias terms
     'bout': tf.Variable(tf.random_normal([1]))
 }
 
 for i in range(nHiddenLayers):
-  weights['h'+str(i+2)] = tf.Variable(tf.random_normal([n_hidden, n_hidden]))
-  weights['b'+str(i+2)] = tf.Variable(tf.random_normal([n_hidden]))
+  weights['h'+str(i+2)] = tf.Variable(tf.random_normal([int(n_nodes[i]), int(n_nodes[i+1])]))
+  weights['b'+str(i+2)] = tf.Variable(tf.random_normal([int(n_nodes[i+1])]))
 
 def multilayer_perceptron(x, weights):
   layer_1 = tf.einsum('ij,jk->ik', x, weights['h1']) + weights['b1']

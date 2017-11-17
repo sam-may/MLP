@@ -74,12 +74,11 @@ def calcSummaryVariables(nR, nAlpha, lepVec, pfCandMatrix):
 ### Summary Variables ### 
 #########################
 
-nSumVars = 7    # the 6 summary variables for each grid slice are the energy sums for the 6 types of pf candidates:
+#nSumVars = 7    # the 7 summary variables for each grid slice are the energy sums for the 6 types of pf candidates:
                 # electrons, muons, charged hadrons, neutral EM particles, neutral hadronic particles, HF EM, and HF hadrons
 # Granularity of grid
-nR = 5
-nAlpha = 1     # set nAlpha = 1 for a 1-d grid in increasing radii (i.e. annului)
-
+#nR = 2
+#nAlpha = 1     # set nAlpha = 1 for a 1-d grid in increasing radii (i.e. annului)
 
 
 def prepLearn(jsonFile, options=0):
@@ -91,6 +90,13 @@ def prepLearn(jsonFile, options=0):
   y = [] # label
   re = [] # relIso field used for baseline predictor
   row = []
+
+  nTrainSig = 0
+  nTrainBkg = 0
+
+  nR = 10
+  nAlpha = 8
+  nSumVars = 7
 
   for d in parseData(jsonFile):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons
@@ -110,10 +116,19 @@ def prepLearn(jsonFile, options=0):
     re.append(d['lepton_relIso03EA'])
     y.append(d['lepton_isFromW'])
     row.append(d['Row'])
+
+    if d['lepton_isFromW']:
+      nTrainSig += 1
+    else:
+      nTrainBkg += 1
+
     if (len(y) % 1000 == 0 and len(y)):
       print(len(y))
 
   X = numpy.array(X)
   y = numpy.array(y, dtype = numpy.float32)
+
+  print("Signal training events: %d" % nTrainSig)
+  print("Bkg training evnets: %d" %nTrainBkg)
 
   return X, y, row

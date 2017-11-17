@@ -85,7 +85,21 @@ void train_bdt()
     factory->AddVariable("nvtx", 'F');    
 
     // Add summary variables
-    
+    int nR = 10;
+    int nAlpha = 1;
+    int nSummaryVariables = 7;
+
+    bool addSummaryVariables = true;
+    if (addSummaryVariables) {
+      for (int i = 0; i < nR; i++) {
+        for (int j = 0; j < nAlpha; j++) {
+          for (int k = 0; k < nSummaryVariables; k++) {
+            TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
+            factory->AddVariable(name, 'F');
+	  }
+	}
+      }
+    }    
 
     // -----------------------------
     //  Input File & Tree
@@ -113,7 +127,8 @@ void train_bdt()
     //root [3] t->Draw("1", "lepton_isFromW==1&&lepton_flavor==1")
     //(long long) 88168
     //TString prepare_nevents = "nTrain_Signal=44084:nTrain_Background=5890:nTest_Signal=44084:nTest_Background=5890:SplitMode=Alternate:NormMode=NumEvents:!V";
-    TString prepare_nevents = "nTrain_Signal=100000:nTrain_Background=96700:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
+    //TString prepare_nevents = "nTrain_Signal=100000:nTrain_Background=96700:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
+    TString prepare_nevents = "nTrain_Signal=88168:nTrain_Background=11780:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
     factory->PrepareTrainingAndTestTree("lepton_isFromW==1&&lepton_flavor==1", "lepton_isFromW==0&&lepton_flavor==1", prepare_nevents);
     factory->SetSignalWeightExpression("1");
     factory->SetBackgroundWeightExpression("1");

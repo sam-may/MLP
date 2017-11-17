@@ -40,8 +40,29 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     reader->AddVariable("lepton_dxy", &lepton_dxy);
     reader->AddVariable("lepton_dz", &lepton_dz);
     reader->AddVariable("lepton_ip3d", &lepton_ip3d);
-    reader->AddVariables("nvtx", &nvtx);
-    reader->BookMVA("BDT", "/home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/TMVA_BDT.weights.xml")
+    reader->AddVariable("nvtx", &nvtx);
+
+    
+
+    // Add summary variables
+    bool addSummaryVariables = true;
+    int nR = 10;
+    int nAlpha = 1;
+    int nSummaryVariables = 7;
+    if (addSummaryVariables) {
+      vector<vector<vector<double>>> vSumVars(nR, vector<vector<double>>(nAlpha, vector<double>(nSummaryVariables, 0.0)));
+      for (int i = 0; i < nR; i++) {
+        for (int j = 0; j < nAlpha; j++) {
+          for (int k = 0; k < nSummaryVariables; k++) {
+            TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
+            reader->AddVariable(name, &(vSumVars[i][j][k]));
+          }
+        }
+      }
+    }    
+
+
+    reader->BookMVA("BDT", "/home/users/sjmay/ML/MLP/bdt/weights/TMVA_BDT.weights.xml");
 
     /*
     reader->BookMVA("BDT", "/hadoop/cms/store/user/phchang/mlp/weights_BDTbaseline_v0.0.2__preliminary_11lepvec_1Msig_100Kbkg_events/TMVA_BDT.weights.xml");
@@ -64,8 +85,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         {
             tx.setTree(looper.getSkimTree());
             tx.createBranch<Float_t>("bdt");
-            tx.createBranch<Float_t>("bdt2");
-            tx.createBranch<Float_t>("bdt3");
+            //tx.createBranch<Float_t>("bdt2");
+            //tx.createBranch<Float_t>("bdt3");
         }
         lepton_eta           = isoml.lepton_eta();
         lepton_phi           = isoml.lepton_phi();

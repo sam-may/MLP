@@ -20,6 +20,8 @@
 //#include "TMVA/Category.h"
 //#endif
 
+//#include "summary_variables.h"
+
 void train_bdt()
 {
     // Initialize TMVA
@@ -65,9 +67,10 @@ void train_bdt()
     //pf_HFEM         = (vector<int>*)0x3ce1800
     //mlp             = -999
 
-//    factory->AddVariable("lepton_eta", 'F');
-//    factory->AddVariable("lepton_phi", 'F');
-//    factory->AddVariable("lepton_pt", 'F');
+    // Original 11 variables
+    factory->AddVariable("lepton_eta", 'F');
+    factory->AddVariable("lepton_phi", 'F');
+    factory->AddVariable("lepton_pt", 'F');
     factory->AddVariable("lepton_relIso03EA", 'F');
     factory->AddVariable("lepton_chiso", 'F');
     factory->AddVariable("lepton_nhiso", 'F');
@@ -76,6 +79,13 @@ void train_bdt()
     factory->AddVariable("lepton_dxy", 'F');
     factory->AddVariable("lepton_dz", 'F');
     factory->AddVariable("lepton_ip3d", 'F');
+
+
+    // Add nvtx
+    factory->AddVariable("nvtx", 'F');    
+
+    // Add summary variables
+    
 
     // -----------------------------
     //  Input File & Tree

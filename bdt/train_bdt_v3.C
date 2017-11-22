@@ -13,7 +13,7 @@
 #include "TMVA/Factory.h"
 #include "TMVA/Tools.h"
 
-void train_bdt(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int nTrainBkg)
+void train_bdt_v3(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int nTrainBkg)
 {
     // Initialize TMVA
     TMVA::Tools::Instance();
@@ -44,7 +44,7 @@ void train_bdt(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int nTr
 	if (nSummaryVariables == 1) {
 	  TString name = "";
 	  for (int k = 0; k < 7; k++) {
-	    name += "<summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k)">";
+	    name += "<summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k) + ">";
 	    if (k != nSummaryVariables - 1) name += "+";
 	  }
 	  factory->AddVariable("SumLabel := "+name, 'F');

@@ -15,11 +15,11 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     RooUtil::TTreeX tx;
     looper.setSkim(output_name);
 
-    int nSummaryVariables = 7;
-    int nR = 10;
-    int nAlpha = 1;
+    int nSummaryVariables = REPLACENSUMMARYVARIABLES;
+    int nR = REPLACENR;
+    int nAlpha = REPLACENALPHA;
 
-    vector<vector<vector<double>>> vSumVars(nR, vector<vector<double>>(nAlpha, vector<double>(nSummaryVariables, 0.0)));
+    vector<vector<vector<float>>> vSumVars(nR, vector<vector<float>>(nAlpha, vector<float>(nSummaryVariables, 0.0)));
 
     // Main event loop
     while (looper.nextEvent())
@@ -27,7 +27,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         if (!tx.getTree())
         {
             tx.setTree(looper.getSkimTree());
-            tx.createBranch<Float_t>("bdt");
+     
             for (int i = 0; i < nR; i++) {
               for (int j = 0; j < nAlpha; j++) {
                 for (int k = 0; k < nSummaryVariables; k++) {
@@ -37,23 +37,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
 	      }
 	    }
         }
-        /*
-        lepton_eta           = isoml.lepton_eta();
-        lepton_phi           = isoml.lepton_phi();
-        lepton_pt            = isoml.lepton_pt();
-        lepton_relIso03EA    = isoml.lepton_relIso03EA();
-        lepton_chiso         = isoml.lepton_chiso();
-        lepton_nhiso         = isoml.lepton_nhiso();
-        lepton_emiso         = isoml.lepton_emiso();
-        lepton_ncorriso      = isoml.lepton_ncorriso();
-        lepton_dxy           = isoml.lepton_dxy();
-        lepton_dz            = isoml.lepton_dz();
-        lepton_ip3d          = isoml.lepton_ip3d();
-        nvtx 		     = isoml.nvtx();
-        tx.setBranch<Float_t>("bdt", reader->EvaluateMVA("BDT"));
-        */
 
-        vector<vector<vector<double>>> vSumVars(nR, vector<vector<double>>(nAlpha, vector<double>(nSummaryVariables, 0.0)));
+        vector<vector<vector<float>>> vSumVars(nR, vector<vector<float>>(nAlpha, vector<float>(nSummaryVariables, 0.0)));
         for (int i = 0; i < isoml.pf_pt().size(); i++) {
 	  int rIdx(-1), alphaIdx(-1), candIdx;
           double r(-1), alpha(-1);
@@ -63,6 +48,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
           if (CandIsLepton(r, vCandId))
 	    continue; 
 	  vSumVars[rIdx][alphaIdx][candIdx] += isoml.pf_pt()[i];
+          //vSumVars[rIdx][alphaIdx][0] += isoml.pf_pt()[i]; // ignore the 7 types of cands
 	}
 
         for (int i = 0; i < nR; i++) {

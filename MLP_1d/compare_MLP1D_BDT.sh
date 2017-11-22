@@ -7,11 +7,8 @@
 # Arg 1: filename
 # Arg 2: train bdt? 0 for train, anything else for skip
 
-### Zip MLP results to root file
-cp checkpoints/output_MLP_$1.txt ../output_MLP.txt
-cd ../babymaker
-source scripts/setup.sh
-run.sh -c zip_mlpoutputs_to_baby.C MLP_BDT_outputs/$1.root t 200000 dummy /home/users/sjmay/ML/IsoML_output.root
+
+source ~/philSetup.sh
 
 ### Train BDT
 cd ../bdt
@@ -26,7 +23,17 @@ fi
 source setup_cmssw.sh
 source scripts/setup.sh
 compile.sh
-run.sh -c apply_bdt_v2.C /home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/$1.root t 200000 dummy /home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/$1.root
+run.sh -c apply_bdt_v2.C /home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/$1"temp.root" t 200000 dummy /home/users/sjmay/ML/IsoML_output_SV.root 
+
+### Zip MLP results to root file
+source ~/philSetup.sh
+cd ../MLP_1d
+cp checkpoints/output_MLP_$1.txt ../output_MLP.txt
+cd ../babymaker
+source scripts/setup.sh
+run.sh -c zip_mlpoutputs_to_baby.C MLP_BDT_outputs/$1.root t 200000 dummy /home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/$1"temp.root"
+
+cd ../bdt
 
 ### Make ROC curve and tables
 source ~/philSetup.sh

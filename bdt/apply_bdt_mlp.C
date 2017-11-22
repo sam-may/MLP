@@ -1,20 +1,21 @@
 //  .
 // ..: P. Chang, philip@physics.ucsd.edu
 
-#include "REPLACEME.h"
-#include "../zip_mlpoutputs_to_baby.h"
-#include "../parse_tf_output.C"
+#include <map>
 
+#include "REPLACEHEADER.h"
+//#include "../babymaker/zip_mlpoutputs_to_baby.h"
+//#include "../babymaker/parse_tf_output.C"
 
 //_________________________________________________________________________________________________
 void ScanChain(TChain* chain, TString output_name, TString base_optstr, int nevents)
 {
     // Event Looper
-    Looper<IsoMLTree> looper(chain, &isoml, nevents);
+    Looper<REPLACEME> looper(chain, &isoml, nevents);
     chain->GetEntry(0);
     isoml.Init(chain->GetTree());
 
-    Parser parser("../output_MLP.txt");
+    //Parser parser("../output_MLP.txt");
 
     // Set up output
     RooUtil::TTreeX tx;
@@ -65,12 +66,12 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
             name += "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
             if (k != nCandTypes - 1) name += "+";
           }
-          factory->AddVariable("SumLabel" + to_string(i) + to_string(j) +  " := "+name, &vSumVars[i][j][k]);
+          reader->AddVariable("SumLabel" + to_string(i) + to_string(j) +  " := "+name, &vSumVars[i][j][0]);
         }
         else {
           for (int k = 0; k < nSummaryVariables; k++) {
             TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
-            factory->AddVariable(name, &vSumVars[i][j][k]);
+            reader->AddVariable(name, &vSumVars[i][j][k]);
 	  }
 	}
       }
@@ -79,13 +80,19 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     reader->BookMVA("BDT", "/home/users/sjmay/ML/MLP/bdt/weights/TMVA_BDT.weights.xml");
 
     // Main event loop
+    //std::map<TString, std::function<float()>> funcMap;
+    typedef const float &(*FnPtr)();
+    std::map<TString, FnPtr> funcMap;
+    //funcMap["isoml.summaryVar_R0_Alpha0_Cand0"] = tas::summaryVar_R0_Alpha0_Cand0;
+    funcMap = REPLACEMAP;
+
     while (looper.nextEvent())
     {
         if (!tx.getTree())
         {
             tx.setTree(looper.getSkimTree());
             tx.createBranch<Float_t>("bdt1");
-            tx.createBranch<Float_t>("mlp");
+            //tx.createBranch<Float_t>("mlp");
         }
         lepton_eta           = isoml.lepton_eta();
         lepton_phi           = isoml.lepton_phi();
@@ -100,28 +107,27 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         lepton_ip3d          = isoml.lepton_ip3d();
         nvtx 		     = isoml.nvtx();
 
-        std::map<TString, std::function<float()>> funcMap;
-        funcMap = REPLACEMAP;
-
 	for (int i = 0; i < nR; i++) {
 	  for (int j = 0; j < nAlpha; j++) {	
 	    if (nSummaryVariables == 1) {
 	      for (int k = 0; k < 7; k++) {
                 TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
-		vSumVars[i][j][0] += funcMap[name];
+		//vSumVars[i][j][0] = 0;
+		vSumVars[i][j][0] += funcMap[name]();
 	      }	      
 	    }
 	    else {
 	      for (int k = 0; k < nSummaryVariables; k++) {
 		TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
-		vSumVars[i][j][k] += funcMap[name];
+	        //vSumVars[i][j][k] = 0;
+		vSumVars[i][j][k] += funcMap[name]();
 	      }
 	    }
 	  }
 	}
 
         tx.setBranch<Float_t>("bdt1", reader->EvaluateMVA("BDT"));
-        tx.setBranch<Float_t>("mlp", parser.mlp(looper.getCurrentEventIndex()));
+        //tx.setBranch<Float_t>("mlp", parser.mlp(looper.getCurrentEventIndex()));
         if (isoml.lepton_flavor() == 1) // only muons
             looper.fillSkim(); 
     }

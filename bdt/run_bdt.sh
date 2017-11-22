@@ -35,19 +35,22 @@ nEventsTot=`expr  $4 + $4 + $5 + $5 + 10000` # add an extra 10,000 to be sure th
 #../babymaker/scripts/makeclass.sh -f $ttree t IsoMLTree"$version" tas isoml
 
 # Train BDT
-root -l -b -q "train_bdt_v3.C+($1,$2,$3,$4,$5)"
+#root -l -b -q "train_bdt_v3.C+($1,$2,$3,$4,$5)"
 
 # Evaluate BDT and zip BDT, MLP results into root file
 source ../babymaker/scripts/setup.sh
+sed "s@REPLACEME@IsoMLTree$version@g" "apply_bdt_mlp.h" > "apply_bdt_mlp_"$version".h"
 sed "s@REPLACEME@IsoMLTree$version@g" "apply_bdt_mlp.C" > "apply_bdt_mlp_"$version".C"
+sed -i "s@REPLACEHEADER@apply_bdt_mlp_$version@g" "apply_bdt_mlp_"$version".C"
+nCandTypes=7
 map={
 for (( i=0; i<$1; i++)) {
   for (( j=0; j<$2; j++)) {
-    for (( k=0; k<$3; k++)) {
-      map=$map'{ ''"'"isoml.summaryVar_R$i""_Alpha$j""_Cand$k"'"'', '"isoml.summarVar_R$i""_Alpha$j""_Cand$k"'}'
+    for (( k=0; k<$nCandTypes; k++)) {
+      map=$map'{ ''"'"summaryVar_R$i""_Alpha$j""_Cand$k"'"'', '"tas::summaryVar_R$i""_Alpha$j""_Cand$k"'}'
       val1=`expr $1 - 1`
       val2=`expr $2 - 1`
-      val3=`expr $3 - 1`
+      val3=`expr $nCandTypes - 1`
       if [[ ( $i == $val1 ) && ( $j == $val2  ) && ( $k == $val3 ) ]]; then
         map=$map'}'
       else
@@ -61,8 +64,8 @@ sed -i "s@REPLACENR@$1@g" "apply_bdt_mlp_"$version".C"
 sed -i "s@REPLACENALPHA@$2@g" "apply_bdt_mlp_"$version".C"
 sed -i "s@REPLACENSUMMARYVARIABLES@$3@g" "apply_bdt_mlp_"$version".C"
 
-#run.sh -c "apply_bdt_mlp_"$version".C" $ttree t 200000 dummy $ttree 
+source prelimSetup.sh
+run.sh -c "apply_bdt_mlp_"$version".C" $ttree t 200000 dummy $ttree 
 
 # Make ROC curve
-source prelimSetup.sh
 #python makerocMLP1DvsBDT.py $version

@@ -4,10 +4,13 @@ import ROOT as r
 import numpy as np
 from sklearn import metrics
 
+import sys
+
 f = r.TFile("/hadoop/cms/store/user/phchang/mlp/output_MLP_muon_50ktrain_50ktest_1000epoch_julianOriginal_BDTbaseline_v0.0.2_3_and_4.root")
 tree = f.Get("t")
 
-fCompare = r.TFile("/home/users/sjmay/ML/MLP/babymaker/samTest2.root")
+MLP_1D_name = str(sys.argv[1])
+fCompare = r.TFile("/home/users/sjmay/ML/MLP/babymaker/" + MLP_1D_name + ".root")
 treeCompare = fCompare.Get("t")
 
 def find_nearest(array,value):
@@ -55,9 +58,6 @@ def makeroc(xmin, xmax, name, title):
     iso_scores = np.array(iso_scores)
     mlp_comp_scores = np.array(mlp_comp_scores)
     labels_comp = np.array(labels_comp)
-
-    print(len(mlp_scores))
-    print(len(mlp_comp_scores))
 
     fpr, tpr, thresholds = metrics.roc_curve(labels, mlp_scores, pos_label=1)
     fpr_bdt, tpr_bdt, thresholds_bdt = metrics.roc_curve(labels, bdt_scores, pos_label=1, sample_weight=weights)
@@ -109,6 +109,17 @@ def makeroc(xmin, xmax, name, title):
     print(' \\\\ \\hline \n')
     print(' \\end{tabular}')
 
+    with open("MLP_1D_rocs/summarySSE.txt", "a") as file:
+      file.write(MLP_1D_name + ' & %.2f & %.2f \\\\ \\hline \n' % (tpr_mlp_comp[idxSS_mlp_comp], fpr_mlp_comp[idxSS_mlp_comp]))
+
+    with open("MLP_1D_rocs/summarySBE.txt", "a") as file:
+      file.write(MLP_1D_name + ' & %.2f & %.2f \\\\ \\hline \n' % (tpr_mlp_comp[idxSB_mlp_comp], fpr_mlp_comp[idxSB_mlp_comp]))
+
+
+    with open("BDT_ROC.txt", "w") as file:
+      for i in range(len(tpr_bdt)):
+        file.write('%.4f %.4f \n' % (fpr_bdt[i], tpr_bdt[i]))
+
     import matplotlib as mpl
     mpl.use('Agg')
     import matplotlib.pyplot as plt
@@ -132,7 +143,7 @@ def makeroc(xmin, xmax, name, title):
     plt.savefig('{}.png'.format(name))
 
 if __name__ == "__main__":
-    makeroc(0, 10000000000, "plot", "inclusive in pT")
+    makeroc(0, 10000000000, "MLP_1D_rocs/" + MLP_1D_name, "inclusive in pT")
     #makeroc(0, 0.1, "plot_00_01", "0 < x < 0.1")
     #makeroc(0.1, 0.2, "plot_01_02", "0.1 < x < 0.2")
     #makeroc(0.2, 0.3, "plot_02_03", "0.2 < x < 0.3")

@@ -85,9 +85,22 @@ void train_bdt()
     factory->AddVariable("nvtx", 'F');    
 
     // Add summary variables
+    // just hardcode 10 annuli for now
+    factory->AddVariable("summaryVar_R0_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R1_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R2_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R3_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R4_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R5_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R6_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R7_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R8_Alpha0_Cand0", 'F');
+    factory->AddVariable("summaryVar_R9_Alpha0_Cand0", 'F');
+
+    /*
     int nR = 10;
     int nAlpha = 1;
-    int nSummaryVariables = 7;
+    int nSummaryVariables = 1;
 
     bool addSummaryVariables = true;
     if (addSummaryVariables) {
@@ -100,12 +113,15 @@ void train_bdt()
 	}
       }
     }    
+    */
 
     // -----------------------------
     //  Input File & Tree
     // -----------------------------
-    TFile* inputSignal = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
-    TFile* inputBkg    = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
+    //TFile* inputSignal = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
+    //TFile* inputBkg    = TFile::Open("/hadoop/cms/store/user/phchang/mlp/IsoML_output_3M.root");
+    TFile* inputSignal = TFile::Open("/home/users/sjmay/ML/IsoML_output_SV.root");
+    TFile* inputBkg    = TFile::Open("/home/users/sjmay/ML/IsoML_output_SV.root");
     TTree *signal     = (TTree*)inputSignal->Get("t");
     TTree *background = (TTree*)inputBkg->Get("t");
     // global event weights per tree (see below for setting event-wise weights)
@@ -128,7 +144,7 @@ void train_bdt()
     //(long long) 88168
     //TString prepare_nevents = "nTrain_Signal=44084:nTrain_Background=5890:nTest_Signal=44084:nTest_Background=5890:SplitMode=Alternate:NormMode=NumEvents:!V";
     //TString prepare_nevents = "nTrain_Signal=100000:nTrain_Background=96700:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
-    TString prepare_nevents = "nTrain_Signal=88168:nTrain_Background=11780:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
+    TString prepare_nevents = "nTrain_Signal=88168:nTrain_Background=11780:nTest_Signal=88168:nTest_Background=11780:SplitMode=Alternate:NormMode=NumEvents:!V";
     factory->PrepareTrainingAndTestTree("lepton_isFromW==1&&lepton_flavor==1", "lepton_isFromW==0&&lepton_flavor==1", prepare_nevents);
     factory->SetSignalWeightExpression("1");
     factory->SetBackgroundWeightExpression("1");

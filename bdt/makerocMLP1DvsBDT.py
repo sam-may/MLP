@@ -7,7 +7,7 @@ from sklearn import metrics
 import sys
 
 file_name = str(sys.argv[1])
-f = r.TFile("/home/users/sjmay/ML/MLP/babymaker/" + file_name + ".root")
+f = r.TFile("/home/users/sjmay/ML/MLP/babymaker/MLP_BDT_outputs/" + file_name + ".root")
 tree = f.Get("t")
 
 def find_nearest(array,value):
@@ -25,10 +25,9 @@ def makeroc(xmin, xmax, name, title):
         # For now, ignore the first half in the TTree where the MLP was trained on.
         if event.mlp < 0:
             continue;
-        if event.lepton_pt < xmin or event.lepton_pt > xmax: continue
         labels.append(event.lepton_isFromW)
         mlp_scores.append(event.mlp)
-        bdt_scores.append(event.bdt)
+        bdt_scores.append(event.bdt1)
         iso_scores.append(-event.lepton_relIso03EA)
         weights.append(1)
 
@@ -96,4 +95,4 @@ def makeroc(xmin, xmax, name, title):
     plt.savefig('{}.png'.format(name))
 
 if __name__ == "__main__":
-    makeroc(0, 10000000000, "MLP_1D_rocs/" + MLP_1D_name, "inclusive in pT")
+    makeroc(0, 10000000000, "MLP_1D_rocs/" + file_name, "inclusive in pT")

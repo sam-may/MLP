@@ -7,4 +7,4 @@ while read f; do
   cd ../bdt
   python makerocComparison.py $f
   cd ../MLP_1d
-done < 'dartsList.txt'
+done < 'dartsList3.txt'

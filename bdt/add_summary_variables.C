@@ -15,7 +15,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     RooUtil::TTreeX tx;
     looper.setSkim(output_name);
 
-    int nSummaryVariables = REPLACENSUMMARYVARIABLES;
+    int nSummaryVariables = 7;
     int nR = REPLACENR;
     int nAlpha = REPLACENALPHA;
 
@@ -48,7 +48,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
           if (CandIsLepton(r, vCandId))
 	    continue; 
 	  vSumVars[rIdx][alphaIdx][candIdx] += isoml.pf_pt()[i];
-          //vSumVars[rIdx][alphaIdx][0] += isoml.pf_pt()[i]; // ignore the 7 types of cands
+          //vSumVars[rIdx][alphaIdx][0] += isoml.pf_pt()[i]; // ignore the nSummaryVariables types of cands
 	}
 
         for (int i = 0; i < nR; i++) {

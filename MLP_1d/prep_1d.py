@@ -55,7 +55,7 @@ def calcCandIdx(pfCandVec, nSumVars):
   return -1
 
 def calcSummaryVariables(nR, nAlpha, lepVec, pfCandMatrix):
-  nSumVars = 6
+  nSumVars = 1
   image = numpy.zeros((nR, nAlpha, nSumVars)) # represent summary variables as nR x nAlpha image with 6 "color" values for each of 6 summary variables
   for i in range(len(pfCandMatrix)):
     pfCandVec = pfCandMatrix[i]
@@ -67,7 +67,8 @@ def calcSummaryVariables(nR, nAlpha, lepVec, pfCandMatrix):
 
     # Now determine the type of pf candidate, and add its energy to the corresponding "color" in the corresponding bin
     candIdx = calcCandIdx(pfCandVec, nSumVars)
-    image[rIdx][alphaIdx][candIdx] += pfCandVec[2]
+    #image[rIdx][alphaIdx][candIdx] += pfCandVec[2]
+    image[rIdx][alphaIdx][0] += pfCandVec[2]
   return image
 
 #########################
@@ -95,8 +96,7 @@ def prepLearn(jsonFile, options=0):
   nTrainBkg = 0
 
   nR = 10
-  nAlpha = 8
-  nSumVars = 7
+  nAlpha = 1
 
   for d in parseData(jsonFile):
     if d['lepton_flavor'] == 0: # To skip either muons or electrons

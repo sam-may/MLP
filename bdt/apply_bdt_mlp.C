@@ -54,16 +54,18 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     int nAlpha = REPLACENALPHA;
     int nSummaryVariables = REPLACENSUMMARYVARIABLES;
 
+    const int nCandTypes = 7;
+
     vector<vector<vector<float>>> vSumVars(nR, vector<vector<float>>(nAlpha, vector<float>(nSummaryVariables, 0.0)));
     for (int i = 0; i < nR; i++) {
       for (int j = 0; j < nAlpha; j++) {
 	if (nSummaryVariables == 1) {
           TString name = "";
-          for (int k = 0; k < 7; k++) {
-            name += "<summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k)">";
-            if (k != nSummaryVariables - 1) name += "+";
+          for (int k = 0; k < nCandTypes; k++) {
+            name += "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
+            if (k != nCandTypes - 1) name += "+";
           }
-          factory->AddVariable("SumLabel := "+name, &vSumVars[i][j][k]);
+          factory->AddVariable("SumLabel" + to_string(i) + to_string(j) +  " := "+name, &vSumVars[i][j][k]);
         }
         else {
           for (int k = 0; k < nSummaryVariables; k++) {

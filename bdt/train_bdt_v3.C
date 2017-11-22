@@ -38,16 +38,18 @@ void train_bdt_v3(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int 
 
     // Add nvtx
     factory->AddVariable("nvtx", 'F');    
-    
+   
+   
+    const int nCandTypes = 7;
     for (int i = 0; i < nR; i++) {
       for (int j = 0; j < nAlpha; j++) {
 	if (nSummaryVariables == 1) {
-	  TString name = "";
-	  for (int k = 0; k < 7; k++) {
-	    name += "<summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k) + ">";
-	    if (k != nSummaryVariables - 1) name += "+";
+	  TString name = "SumLabel" + to_string(i) + to_string(j) + ":= ";
+	  for (int k = 0; k < nCandTypes; k++) {
+	    name += "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
+	    if (k != nCandTypes - 1) name += "+";
 	  }
-	  factory->AddVariable("SumLabel := "+name, 'F');
+	  factory->AddVariable(name, 'F');
 	}
 	else {
 	  for (int k = 0; k < nSummaryVariables; k++) {

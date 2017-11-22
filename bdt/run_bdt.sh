@@ -29,7 +29,7 @@ sed -i "s@REPLACENALPHA@$2@g" "add_summary_variables_"$version".C"
 sed -i "s@REPLACENSUMMARYVARIABLES@$3@g" "add_summary_variables_"$version".C"
 
 nEventsTot=`expr  $4 + $4 + $5 + $5 + 10000` # add an extra 10,000 to be sure that there are at least 2*$4 sig and 2*$5 bkg
-run.sh -c "add_summary_variables_"$version".C" $ttree t 1000000 dummy /home/users/sjmay/ML/IsoML_output.root
+#run.sh -c "add_summary_variables_"$version".C" $ttree t 1000000 dummy /home/users/sjmay/ML/IsoML_output.root
 
 # Make class files for root file
 #../babymaker/scripts/makeclass.sh -f $ttree t IsoMLTree"$version" tas isoml

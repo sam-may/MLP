@@ -5,7 +5,8 @@
 
 #include "REPLACEHEADER.h"
 //#include "../babymaker/zip_mlpoutputs_to_baby.h"
-//#include "../babymaker/parse_tf_output.C"
+#include "../babymaker/parse_tf_output.C"
+#include "../babymaker/rooutil/looper.h"
 
 //_________________________________________________________________________________________________
 void ScanChain(TChain* chain, TString output_name, TString base_optstr, int nevents)
@@ -15,7 +16,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     chain->GetEntry(0);
     isoml.Init(chain->GetTree());
 
-    //Parser parser("../output_MLP.txt");
+    Parser parser("../output_MLP.txt");
 
     // Set up output
     RooUtil::TTreeX tx;
@@ -92,7 +93,7 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
         {
             tx.setTree(looper.getSkimTree());
             tx.createBranch<Float_t>("bdt1");
-            //tx.createBranch<Float_t>("mlp");
+            tx.createBranch<Float_t>("mlp");
         }
         lepton_eta           = isoml.lepton_eta();
         lepton_phi           = isoml.lepton_phi();

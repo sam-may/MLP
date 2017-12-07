@@ -1,4 +1,7 @@
 import tensorflow as tf # Needs python 3.5.2
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+
 import gzip
 import matplotlib.pyplot as plt
 
@@ -159,21 +162,21 @@ n_train = len(y) - n_test
 # Controls number of hidden dimensions
 n_input1 = len(X1[0])
 n_input2 = len(X2[0])
-n_hidden_1 = 10
+n_hidden_1 = 8
 n_hidden_2 = 8
-n_hidden_3 = 6
+n_hidden_3 = 8
 
-n_hidden_sv_1 = int((2*n_input2)/3)
-n_hidden_sv_2 = int(n_hidden_sv_1/2)
-n_hidden_sv_3 = int(n_hidden_sv_2/2)
+n_hidden_sv_1 = min(int((2*n_input2)/3),16)
+n_hidden_sv_2 = n_hidden_sv_1 
+n_hidden_sv_3 = n_hidden_sv_2
 
 weights = {
     'h11': tf.Variable(tf.random_normal([n_input1, n_hidden_1])), # Weights
     'h12': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
     'h13': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3])),
     'h21': tf.Variable(tf.random_normal([n_input2, n_hidden_sv_1])), # Weights
-    'h22': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_sv_2])),
-    'h23': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_sv_3])),
+    'h22': tf.Variable(tf.random_normal([n_hidden_sv_1, n_hidden_sv_2])),
+    'h23': tf.Variable(tf.random_normal([n_hidden_sv_2, n_hidden_sv_3])),
     'h31': tf.Variable(tf.random_normal([n_hidden_3 + n_hidden_sv_3, n_hidden_1])), # Weights
     'h32': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
     'h33': tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3])),
@@ -241,11 +244,11 @@ train = optimizer.minimize(objective)
 init = tf.global_variables_initializer()
 
 # Create a new optimization session
-sess = tf.Session()
+sess = tf.Session(config=config)
 sess.run(init)
 
 # Run several iterations of gradient descent
-for iteration in range(10000):
+for iteration in range(50000):
   cvalues = sess.run([train, objective])
   print("objective = " + str(cvalues[1]))
 
@@ -255,6 +258,46 @@ with sess.as_default():
   y_pred = preds.eval()
 
 sess.close()
+
+
+def curve(pred_base, pred, y):
+  x_base = []
+  y_base = []
+  x_pred = []
+  y_pred = []
+  nPoints = 1000
+  for i in range(nPoints):
+    print(i)
+    tpr, fpr = testError(y, pred, i * 1.0 / nPoints)
+    y_pred.append(tpr)
+    x_pred.append(fpr)
+    tpr, fpr = testError(y, pred_base, - i * 1.0 / nPoints)
+    y_base.append(tpr)
+    x_base.append(fpr)
+  #fig, ax = plt.subplots()
+  #z = open("BDT_ROC.txt", 'r').readlines()
+  #z = [xy.split() for xy in z]
+  #x_bdt = [float(x) for (x,y) in z]
+  #y_bdt = [float(y) for (x,y) in z]
+  #plt.xlim([0.001,1.0])
+  #plt.ylim([0.5,1.0])
+  #ax.set_xscale("log", nonposx='clip')
+  #ax.plot(x_base, y_base, 'y', lw=1, label='relIso')
+  #ax.plot(x_bdt, y_bdt, 'g', lw=1, label='bdt')
+  #ax.plot(x_pred, y_pred, 'b', lw=2, label='mlp')
+  #ax.plot()
+  #ax.legend()
+  #plt.ylabel("True positive rate")
+  #plt.xlabel("False positive rate")
+  #plt.savefig("plot_" + str(nR) + 'annuli_' + str(nAlpha) + 'alpha_' + str(nSumVars) + "cands.pdf")
+  rocFileName = "ROC_" + str(nR) + 'annuli_' + str(nAlpha) + 'alpha_' + str(nSumVars) + "cands.txt"
+  rocFile = open(rocFileName, 'w')
+  for i in range(nPoints):  
+    rocFile.write("%.3f " % x_pred[i])
+    rocFile.write("%.3f\n" % y_pred[i])
+  
+
+curve(list(-numpy.array(re))[n_train:], y_pred, y[n_train:])
 
 varsToWrite = []
 varsToWrite.append(row)
@@ -280,35 +323,3 @@ for i in range(n_test):
       file.write("%.9f " % varsToWrite[j][i])
     else:
       file.write("%.9f\n" % varsToWrite[j][i])
-
-def curve(pred_base, pred, y):
-  x_base = []
-  y_base = []
-  x_pred = []
-  y_pred = []
-  nPoints = 100000
-  for i in range(nPoints):
-    tpr, fpr = testError(y, pred, i * 1.0 / nPoints)
-    y_pred.append(tpr)
-    x_pred.append(fpr)
-    tpr, fpr = testError(y, pred_base, - i * 1.0 / nPoints)
-    y_base.append(tpr)
-    x_base.append(fpr)
-  fig, ax = plt.subplots()
-  #z = open("BDT_ROC.txt", 'r').readlines()
-  #z = [xy.split() for xy in z]
-  x_bdt = [float(x) for (x,y) in z]
-  y_bdt = [float(y) for (x,y) in z]
-  plt.xlim((0.001,1.0))
-  plt.ylim((0.5,1.0))
-  ax.set_xscale("log", nonposx='clip')
-  ax.plot(x_base, y_base, 'y', lw=1, label='relIso')
-  #ax.plot(x_bdt, y_bdt, 'g', lw=1, label='bdt')
-  ax.plot(x_pred, y_pred, 'b', lw=2, label='mlp')
-  #ax.plot()
-  ax.legend()
-  plt.ylabel("True positive rate")
-  plt.xlabel("False positive rate")
-  plt.savefig("plot_" + str(nR) + 'annuli_' + str(nAlpha) + 'alpha_' + str(nSumVars) + "cands.pdf")
-
-curve(list(-numpy.array(re))[n_train:], y_pred, y[n_train:])

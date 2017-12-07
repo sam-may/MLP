@@ -39,6 +39,10 @@ void train_bdt_v3(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int 
     // Add nvtx
     factory->AddVariable("nvtx", 'F');    
    
+
+    cout << nR << endl;
+    cout << nAlpha << endl;
+    cout << nSummaryVariables << endl;
    
     const int nCandTypes = 7;
     for (int i = 0; i < nR; i++) {
@@ -64,7 +68,7 @@ void train_bdt_v3(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int 
     // -----------------------------
     //  Input File & Tree
     // -----------------------------
-    TString rootFile = "../babymaker/MLP_BDT_outputs/IsoML_output_" + to_string(nR) + "annuli_" + to_string(nAlpha) + "alpha_" + to_string(nSummaryVariables) + "cands.root"; 
+    TString rootFile = "../babymaker/MLP_BDT_outputs/IsoML_output_" + to_string(nR) + "annuli_" + to_string(nAlpha) + "alpha_" + to_string(nSummaryVariables) + "cands_orig.root"; 
     TFile* inputSignal = TFile::Open(rootFile);
     TFile* inputBkg    = TFile::Open(rootFile);
     TTree *signal     = (TTree*)inputSignal->Get("t");
@@ -89,11 +93,12 @@ void train_bdt_v3(int nR, int nAlpha, int nSummaryVariables, int nTrainSig, int 
     //(long long) 88168
     //TString prepare_nevents = "nTrain_Signal=44084:nTrain_Background=5890:nTest_Signal=44084:nTest_Background=5890:SplitMode=Alternate:NormMode=NumEvents:!V";
     //TString prepare_nevents = "nTrain_Signal=100000:nTrain_Background=96700:nTest_Signal=100000:nTest_Background=96700:SplitMode=Alternate:NormMode=NumEvents:!V";
-    TString prepare_nevents = "nTrain_Signal=" + to_string(nTrainSig) + ":nTrain_Background=" + to_string(nTrainBkg) + ":nTest_Signal=88168:nTest_Background=11780:SplitMode=Alternate:NormMode=NumEvents:!V";
+    TString prepare_nevents = "nTrain_Signal=" + to_string(nTrainSig) + ":nTrain_Background=" + to_string(nTrainBkg) + ":nTest_Signal=" + to_string(nTrainSig) + ":nTest_Background=" + to_string(nTrainBkg) + ":SplitMode=Alternate:NormMode=NumEvents:!V";
     factory->PrepareTrainingAndTestTree("lepton_isFromW==1&&lepton_flavor==1", "lepton_isFromW==0&&lepton_flavor==1", prepare_nevents);
     factory->SetSignalWeightExpression("1");
     factory->SetBackgroundWeightExpression("1");
 
+    //TString option = "!H:V:NTrees=1000:BoostType=Grad:Shrinkage=0.10:!UseBaggedGrad:nCuts=2000:MinNodeSize=0.1%:PruneStrength=5:PruneMethod=CostComplexity:MaxDepth=3:CreateMVAPdfs";
     TString option = "!H:V:NTrees=1000:BoostType=Grad:Shrinkage=0.10:!UseBaggedGrad:nCuts=2000:MinNodeSize=0.1%:PruneStrength=5:PruneMethod=CostComplexity:MaxDepth=3:CreateMVAPdfs";
     factory->BookMethod(TMVA::Types::kBDT, "BDT", option);
     factory->TrainAllMethods();

@@ -88,7 +88,7 @@ def parseData(fname):
   for l in gzip.open(fname):
     yield eval(l)
 
-for d in parseData("/home/users/sjmay/ML/convertJson/parsed_500k_nvtx.json.gz"):
+for d in parseData("/home/users/sjmay/ML/convertJson/parsed_1000k_nvtx.json.gz"):
   if d['lepton_flavor'] != 1: # To skip either muons or electrons
     continue
   x1 = [1] + d['lepVec'] + [d['nvtx']]
@@ -97,6 +97,7 @@ for d in parseData("/home/users/sjmay/ML/convertJson/parsed_500k_nvtx.json.gz"):
   X2.append(numpy.array(x2, dtype = numpy.float32))
   re.append(d['lepton_relIso03EA'])
   y.append(d['lepton_isFromW'])
+  row.append(d['Row'])
   if (len(y) % 1000 == 0 and len(y)):
     print(len(y))
   if len(y) >= 400000:
@@ -149,7 +150,8 @@ def testError(labels, preds, thresh):
   return tpr, fpr
 
 # Fraction of data used for training
-n_train = len(y) - 50000
+n_test = 50000
+n_train = len(y) - n_test
 
 # Run the baseline method. Note the negation due to interpretation of being above vs. below a threshold
 (tpr_cut, fpr_cut) = testError(y[n_train:], list(-numpy.array(re))[n_train:], -0.06)
@@ -260,10 +262,10 @@ for i in range(len(varsToWrite)):
     continue # y_preds were only calculated for second half of data
   varsToWrite[i] = list(numpy.array(varsToWrite[i]))[n_train:]
 
-n_test = len(varsToWrite[1])
+#n_test = len(varsToWrite[1])
 
 # Save to txt file
-fileName = '../output_MLP.txt'
+fileName = 'checkpoints/output_MLP_' + str(nR) + 'annuli_' + str(nAlpha) + 'alpha_' + str(nSumVars) + 'cands.txt'
 file = open(fileName, 'w')
 
 for i in range(n_test):

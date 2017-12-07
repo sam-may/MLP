@@ -6,7 +6,9 @@
 #include "REPLACEHEADER.h"
 //#include "../babymaker/zip_mlpoutputs_to_baby.h"
 #include "../babymaker/parse_tf_output.C"
-#include "../babymaker/rooutil/looper.h"
+//#include "../babymaker/rooutil/looper.h"
+//#include "../babymaker/rooutil/autohist.h"
+//#include "../babymaker/rooutil/ttreex.h"
 
 //_________________________________________________________________________________________________
 void ScanChain(TChain* chain, TString output_name, TString base_optstr, int nevents)
@@ -81,10 +83,8 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
     reader->BookMVA("BDT", "/home/users/sjmay/ML/MLP/bdt/weights/TMVA_BDT.weights.xml");
 
     // Main event loop
-    //std::map<TString, std::function<float()>> funcMap;
     typedef const float &(*FnPtr)();
     std::map<TString, FnPtr> funcMap;
-    //funcMap["isoml.summaryVar_R0_Alpha0_Cand0"] = tas::summaryVar_R0_Alpha0_Cand0;
     funcMap = REPLACEMAP;
 
     while (looper.nextEvent())
@@ -111,24 +111,26 @@ void ScanChain(TChain* chain, TString output_name, TString base_optstr, int neve
 	for (int i = 0; i < nR; i++) {
 	  for (int j = 0; j < nAlpha; j++) {	
 	    if (nSummaryVariables == 1) {
+	      float sum = 0;
 	      for (int k = 0; k < 7; k++) {
                 TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
-		//vSumVars[i][j][0] = 0;
-		vSumVars[i][j][0] += funcMap[name]();
-	      }	      
+		sum += funcMap[name]();
+		//vSumVars[i][j][0] += funcMap[name]();
+	      }
+	      vSumVars[i][j][0] = sum;	      
 	    }
 	    else {
 	      for (int k = 0; k < nSummaryVariables; k++) {
 		TString name = "summaryVar_R" + to_string(i) + "_Alpha" + to_string(j) + "_Cand" + to_string(k);
 	        //vSumVars[i][j][k] = 0;
-		vSumVars[i][j][k] += funcMap[name]();
+		vSumVars[i][j][k] = funcMap[name]();
 	      }
 	    }
 	  }
 	}
 
         tx.setBranch<Float_t>("bdt1", reader->EvaluateMVA("BDT"));
-        //tx.setBranch<Float_t>("mlp", parser.mlp(looper.getCurrentEventIndex()));
+        tx.setBranch<Float_t>("mlp", parser.mlp(looper.getCurrentEventIndex()));
         if (isoml.lepton_flavor() == 1) // only muons
             looper.fillSkim(); 
     }

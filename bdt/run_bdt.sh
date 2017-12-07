@@ -30,7 +30,9 @@ sed -i "s@REPLACENALPHA@$2@g" "add_summary_variables_"$version".C"
 sed -i "s@REPLACENSUMMARYVARIABLES@$3@g" "add_summary_variables_"$version".C"
 
 nEventsTot=`expr  $4 + $4 + $5 + $5 + 10000` # add an extra 10,000 to be sure that there are at least 2*$4 sig and 2*$5 bkg
-run.sh -c "add_summary_variables_"$version".C" $ttreeOrig t 1000000 dummy /home/users/sjmay/ML/IsoML_output.root
+if [ ! -f $ttreOrig ]; then
+  run.sh -c "add_summary_variables_"$version".C" $ttreeOrig t 3000000 dummy /home/users/sjmay/ML/IsoML_output.root
+fi
 
 # Make class files for root file
 ../babymaker/scripts/makeclass.sh -f $ttreeOrig t IsoMLTree"$version" tas isoml
@@ -66,7 +68,18 @@ sed -i "s@REPLACENALPHA@$2@g" "apply_bdt_mlp_"$version".C"
 sed -i "s@REPLACENSUMMARYVARIABLES@$3@g" "apply_bdt_mlp_"$version".C"
 
 source prelimSetup.sh
-run.sh -c "apply_bdt_mlp_"$version".C" $ttree t 200000 dummy $ttreeOrig 
+source setup_cmssw.sh
+source scripts/setup.sh
+compile.sh
+
+if [[ ( $3 == 5 ) ]]; then
+  versionMLP=$1"annuli_"$2"alpha_7cands"
+else
+  versionMLP=$version
+fi
+cp ../gridImage/checkpoints/output_MLP_"$versionMLP".txt ../output_MLP.txt
+run.sh -c "apply_bdt_mlp_"$version".C" $ttree t 3000000 dummy $ttreeOrig 
 
 # Make ROC curve
-python makerocMLP1DvsBDT.py "IsoML_output_"$version
+source prelimSetup.sh
+python makerocMLP1DvsBDT.py "IsoML_output_"$version > "effTables_"$version".txt"
